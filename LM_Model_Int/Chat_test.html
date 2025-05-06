@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ask GPT</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      padding: 40px;
+    }
+    .chat-container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #chat-log {
+      min-height: 200px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+    .message {
+      margin-bottom: 12px;
+    }
+    .user {
+      font-weight: bold;
+      color: #0078d7;
+    }
+    .ai {
+      color: #222;
+    }
+    input[type="text"] {
+      width: calc(100% - 110px);
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0078d7;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="chat-container">
+  <h2>Ask the AI</h2>
+  <div id="chat-log"></div>
+  <input type="text" id="user-question" placeholder="Ask something..." />
+  <button onclick="sendToGPT()">Send</button>
+</div>
+
+<script>
+  const apiKey = "YOUR_OPENAI_API_KEY"; // Replace with your real API key
+
+  async function sendToGPT() {
+    const input = document.getElementById("user-question");
+    const log = document.getElementById("chat-log");
+    const question = input.value.trim();
+    if (!question) return;
+
+    log.innerHTML += `<div class="message"><span class="user">You:</span> ${question}</div>`;
+    input.value = '';
+
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo", // or "gpt-4"
+          messages: [
+            { role: "system", content: "You are a helpful assistant." },
+            { role: "user", content: question }
+          ]
+        })
+      });
+
+      const data = await response.json();
+      const aiMessage = data.choices[0].message.content;
+
+      log.innerHTML += `<div class="message"><span class="ai">AI:</span> ${aiMessage}</div>`;
+      log.scrollTop = log.scrollHeight;
+
+    } catch (error) {
+      log.innerHTML += `<div class="message"><span class="ai">AI:</span> Error: ${error.message}</div>`;
+      console.error(error);
+    }
+  }
+</script>
+
+</body>
+</html>
