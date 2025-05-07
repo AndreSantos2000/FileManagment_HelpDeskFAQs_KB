@@ -67,4 +67,4 @@ def delete_file(file_id):
 
 if __name__ == '__main__':
     init_db()
-    app.run(host='10.201.132.150', port=5000)
+    app.run(host='10.14.208.198', port=5000)
