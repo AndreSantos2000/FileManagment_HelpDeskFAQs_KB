@@ -1,18 +1,21 @@
 from flask import Flask, request, jsonify, send_file, render_template
 from flask_cors import CORS
 import sqlite3
-import io
+import io, os
 
 app = Flask(__name__)
 CORS(app)
-DB_FILE = 'my_files.db'
+DB_FILE = os.getenv("DB_PATH", "/data/my_files.db")
+#DB_FILE = 'my_files.db'
 
 def init_db():
     with sqlite3.connect(DB_FILE) as conn:
         conn.execute('''
             CREATE TABLE IF NOT EXISTS files (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
+                nome TEXT,
+                tipo TEXT,
+                subtipo TEXT,
                 data BLOB
             )
         ''')
