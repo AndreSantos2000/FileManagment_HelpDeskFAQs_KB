@@ -48,7 +48,8 @@
     formData.append('file', file);
 
     /*await fetch('http://localhost:5000/upload', {*/
-    await fetch('http://10.201.139.53:5000/upload', {
+    /*await fetch('http://10.201.139.53:5000/upload', {*/
+    await fetch('/upload', {
       method: 'POST',
       body: formData
     });
@@ -92,19 +93,22 @@
 
   async function viewText(id) {
     /*const res = await fetch(`http://localhost:5000/text/${id}`);*/
-    const res = await fetch(`http://10.201.139.53:5000/text/${id}`);
+    /*const res = await fetch(`http://10.201.139.53:5000/text/${id}`);*/
+    const res = await fetch(`/text/${id}`);
     const text = await res.text();
     document.getElementById('fileContent').textContent = text;
   }
 
   function downloadFile(id) {
     /*window.open(`http://localhost:5000/file/${id}`);*/
-    window.open(`http://10.201.139.53:5000/file/${id}`);
+    /*window.open(`http://10.201.139.53:5000/file/${id}`);*/
+    window.open(`/file/${id}`);
   }
 
   async function deleteFile(id) {
     /*await fetch(`http://localhost:5000/delete/${id}`, { method: 'DELETE' });*/
-    await fetch(`http://10.201.139.53:5000/delete/${id}`, { method: 'DELETE' });
+    /*await fetch(`http://10.201.139.53:5000/delete/${id}`, { method: 'DELETE' });*/
+    await fetch(`/delete/${id}`, { method: 'DELETE' });
     loadFiles();
   }
 
