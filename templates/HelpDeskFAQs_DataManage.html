@@ -58,8 +58,8 @@
   }
 
   async function loadFiles() {
-  const res = await fetch('http://localhost:5000/files');
-  /*const res = await fetch('http://10.201.139.53:5000/files');*/
+  /*const res = await fetch('http://localhost:5000/files');*/
+  const res = await fetch('http://10.201.139.53:5000/files');
   const files = await res.json();
   const list = document.getElementById('fileList');
   list.innerHTML = '';
@@ -97,8 +97,8 @@
   }
 
   function downloadFile(id) {
-    window.open(`http://localhost:5000/file/${id}`);
-    /*window.open(`http://10.201.139.53:5000/file/${id}`);*/
+    /*window.open(`http://localhost:5000/file/${id}`);*/
+    window.open(`http://10.201.139.53:5000/file/${id}`);
   }
 
   async function deleteFile(id) {
