@@ -5,6 +5,10 @@ import io, os
 
 app = Flask(__name__)
 CORS(app)
+
+DATA_DIR = "/data"
+if not os.path.exists(DATA_DIR):
+    os.makedirs(DATA_DIR, exist_ok=True)
 DB_FILE = os.getenv("DB_PATH", "/data/my_files.db")
 #DB_FILE = 'my_files.db'
 
