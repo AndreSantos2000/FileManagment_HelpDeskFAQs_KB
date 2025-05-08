@@ -17,7 +17,7 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 tema_id INT,
                 master_tema_id INT,
-                nome TEXT,
+                name TEXT,
                 data BLOB
             )
         ''')
