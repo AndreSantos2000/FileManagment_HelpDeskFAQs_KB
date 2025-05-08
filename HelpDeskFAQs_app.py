@@ -13,9 +13,9 @@ def init_db():
         conn.execute('''
             CREATE TABLE IF NOT EXISTS files (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tema_id INT,
+                master_tema_id INT,
                 nome TEXT,
-                tipo TEXT,
-                subtipo TEXT,
                 data BLOB
             )
         ''')
