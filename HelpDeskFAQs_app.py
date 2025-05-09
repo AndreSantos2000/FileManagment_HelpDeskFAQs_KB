@@ -1,75 +1,70 @@
+import os
 from flask import Flask, request, jsonify, send_file, render_template
-from flask_cors import CORS
-import sqlite3
-import io, os
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-CORS(app)
 
-DATA_DIR = "/tmp"
-DB_FILE = os.path.join(DATA_DIR, "my_files.db")
-#DB_FILE = 'my_files.db'
+# Configure database (PostgreSQL in production, fallback to SQLite locally)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///my_files.db")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-def init_db():
-    with sqlite3.connect(DB_FILE) as conn:
-        conn.execute('''
-            CREATE TABLE IF NOT EXISTS files (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                tema_id INT,
-                master_tema_id INT,
-                name TEXT,
-                data BLOB
-            )
-        ''')
+db = SQLAlchemy(app)
 
-@app.route('/')
-def home():
-    return render_template('HelpDeskFAQs_DataManage.html')
+# File model
+class File(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(200), nullable=False)
+    filepath = db.Column(db.String(300), nullable=False)
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    file = request.files['file']
-    data = file.read()
-    with sqlite3.connect(DB_FILE) as conn:
-        conn.execute("INSERT INTO files (name, data) VALUES (?, ?)", (file.filename, data))
-    return 'File uploaded', 200
+# Ensure upload directory exists
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.route('/files', methods=['GET'])
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/upload", methods=["POST"])
+def upload():
+    file = request.files["file"]
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(UPLOAD_FOLDER, filename)
+    file.save(filepath)
+
+    new_file = File(filename=filename, filepath=filepath)
+    db.session.add(new_file)
+    db.session.commit()
+
+    return jsonify({"message": "File uploaded successfully."})
+
+@app.route("/files", methods=["GET"])
 def list_files():
-    with sqlite3.connect(DB_FILE) as conn:
-        rows = conn.execute("SELECT id, name FROM files").fetchall()
-    return rows
+    files = File.query.all()
+    return jsonify([{"id": f.id, "name": f.filename} for f in files])
 
-@app.route('/file/<int:file_id>', methods=['GET'])
-def get_file(file_id):
-    with sqlite3.connect(DB_FILE) as conn:
-        row = conn.execute("SELECT name, data FROM files WHERE id = ?", (file_id,)).fetchone()
-    if row:
-        name, data = row
-        return send_file(io.BytesIO(data), download_name=name, as_attachment=True)
-    return 'File not found', 404
+@app.route("/download/<int:file_id>", methods=["GET"])
+def download(file_id):
+    file = File.query.get_or_404(file_id)
+    return send_file(file.filepath, as_attachment=True)
 
-@app.route('/text/<int:file_id>', methods=['GET'])
-def get_text_content(file_id):
-    with sqlite3.connect(DB_FILE) as conn:
-        row = conn.execute("SELECT name, data FROM files WHERE id = ?", (file_id,)).fetchone()
-    if row:
-        try:
-            text = row[1].decode("utf-8")
-            return text, 200
-        except UnicodeDecodeError:
-            return "Not a text file", 400
-    return "File not found", 404
+@app.route("/delete/<int:file_id>", methods=["DELETE"])
+def delete(file_id):
+    file = File.query.get_or_404(file_id)
+    try:
+        os.remove(file.filepath)
+    except FileNotFoundError:
+        pass
+    db.session.delete(file)
+    db.session.commit()
+    return jsonify({"message": "File deleted."})
 
-@app.route('/delete/<int:file_id>', methods=['DELETE'])
-def delete_file(file_id):
-    with sqlite3.connect(DB_FILE) as conn:
-        cur = conn.execute("DELETE FROM files WHERE id = ?", (file_id,))
-        if cur.rowcount > 0:
-            return "Deleted", 200
-        else:
-            return "Not found", 404
-
-if __name__ == '__main__':
-    init_db()
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

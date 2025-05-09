@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>File Manager</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+  <h1 class="mb-4">File Manager</h1>
+  <form id="uploadForm" enctype="multipart/form-data" class="mb-3">
+    <input type="file" name="file" required />
+    <button class="btn btn-primary">Upload</button>
+  </form>
+  <ul id="fileList" class="list-group"></ul>
+
+  <script>
+    const form = document.getElementById("uploadForm");
+    const fileList = document.getElementById("fileList");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      await fetch("/upload", { method: "POST", body: formData });
+      form.reset();
+      loadFiles();
+    });
+
+    async function loadFiles() {
+      const res = await fetch("/files");
+      const files = await res.json();
+      fileList.innerHTML = "";
+      files.forEach(file => {
+        const item = document.createElement("li");
+        item.className = "list-group-item d-flex justify-content-between align-items-center";
+        item.innerHTML = `
+          ${file.name}
+          <span>
+            <a href="/download/${file.id}" class="btn btn-sm btn-success">Download</a>
+            <button onclick="deleteFile(${file.id})" class="btn btn-sm btn-danger">Delete</button>
+          </span>
+        `;
+        fileList.appendChild(item);
+      });
+    }
+
+    async function deleteFile(id) {
+      await fetch(`/delete/${id}`, { method: "DELETE" });
+      loadFiles();
+    }
+
+    loadFiles();
+  </script>
+</body>
+</html>
