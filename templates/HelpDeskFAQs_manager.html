@@ -36,27 +36,17 @@
       fileList.innerHTML = "";
       files.forEach(file => {
         const item = document.createElement("li");
+        const isTxt = file.name.toLowerCase().endsWith(".txt");
         item.className = "list-group-item d-flex justify-content-between align-items-center";
-        if (file.name.includes('.txt')){
-          item.innerHTML = `
+        item.innerHTML = `
           ${file.name}
           <span>
             <a href="/download/${file.id}" class="btn btn-sm btn-success">Download</a>
-            <button onclick="deleteFile(${file.id})" class="btn btn-sm btn-danger">Delete</button>
-            <button class="btn btn-sm btn-secondary me-2" onclick="viewFile(${file.id})">View</button>
-          </span>
-          `;
-          fileList.appendChild(item);
-        }else{
-          item.innerHTML = `
-          ${file.name}
-          <span>
-            <a href="/download/${file.id}" class="btn btn-sm btn-success">Download</a>
+            ${isTxt ? `<button onclick="viewFile(${file.id})" class="btn btn-sm btn-info">View</button>` : ""}
             <button onclick="deleteFile(${file.id})" class="btn btn-sm btn-danger">Delete</button>
           </span>
-          `;
+        `;
         fileList.appendChild(item);
-        }
       });
     }
 
@@ -74,9 +64,9 @@
       return;
       }
 
-      document.getElementById("viewerFilename").textContent = data.filename;
+      /*document.getElementById("viewerFilename").textContent = data.filename;
       document.getElementById("viewerContent").textContent = data.content;
-      document.getElementById("fileViewer").style.display = "block";
+      document.getElementById("fileViewer").style.display = "block";*/
     } 
 
     loadFiles();
