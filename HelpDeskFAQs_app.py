@@ -66,6 +66,7 @@ def delete(file_id):
 @app.route("/view/<int:file_id>", methods=["GET"])
 def view_file(file_id):
     file = File.query.get_or_404(file_id)
+    print(file.filepath)
     if not file.filename.lower().endswith(".txt"):
         return jsonify({"error": "Only .txt files can be viewed"}), 400
 
