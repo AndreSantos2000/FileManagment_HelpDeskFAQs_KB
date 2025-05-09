@@ -21,9 +21,9 @@ class File(db.Model):
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.got_first_request
-def create_tables():
-    db.create_all()
+#@app._got_first_request
+#def create_tables():
+#    db.create_all()
 
 @app.route("/")
 def index():
@@ -65,6 +65,9 @@ def delete(file_id):
     db.session.delete(file)
     db.session.commit()
     return jsonify({"message": "File deleted."})
+
+with app.app_context():
+    db.create_all()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
