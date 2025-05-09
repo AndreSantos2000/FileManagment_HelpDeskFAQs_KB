@@ -77,25 +77,6 @@
       });
     }
 
-    if (name.includes('.txt')){
-      item.innerHTML = `
-        <td>${name}</td>
-        <td>
-          <button class="btn btn-sm btn-secondary me-2" onclick="viewText(${id})">View</button>
-          <button class="btn btn-sm btn-success me-2" onclick="downloadFile(${id})">Download</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteFile(${id})">Delete</button>
-        </td>
-      `;
-    }else{
-      item.innerHTML = `
-        <td>${name}</td>
-        <td>
-          <button class="btn btn-sm btn-success me-2" onclick="downloadFile(${id})">Download</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteFile(${id})">Delete</button>
-        </td>
-      `;
-    }
-
     async function deleteFile(id) {
       await fetch(`/delete/${id}`, { method: "DELETE" });
       loadFiles();
