@@ -34,10 +34,9 @@
   </div>
 
   <!-- File Preview Section -->
-  <div class="card p-3 shadow-sm">
-    <h4>Text File Content</h4>
-    <pre id="fileContent" class="bg-white p-3 rounded border text-wrap" style="max-height: 300px; overflow-y: auto;"></pre>
-  </div>
+  <div id="fileViewer" class="mt-4" style="display:none;">
+  <h5>Viewing: <span id="viewerFilename"></span></h5>
+  <pre id="viewerContent" class="bg-light p-3 border rounded" style="white-space: pre-wrap;"></pre>
 </div>
 
 <script>

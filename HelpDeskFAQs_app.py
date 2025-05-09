@@ -63,6 +63,19 @@ def delete(file_id):
     db.session.commit()
     return jsonify({"message": "File deleted."})
 
+@app.route("/view/<int:file_id>", methods=["GET"])
+def view_file(file_id):
+    file = File.query.get_or_404(file_id)
+    if not file.filename.lower().endswith(".txt"):
+        return jsonify({"error": "Only .txt files can be viewed"}), 400
+
+    try:
+        with open(file.filepath, "r", encoding="utf-8") as f:
+            content = f.read()
+        return jsonify({"filename": file.filename, "content": content})
+    except Exception as e:
+        return jsonify({"error": f"Could not read file: {str(e)}"}), 500
+
 with app.app_context():
     db.create_all()
 
