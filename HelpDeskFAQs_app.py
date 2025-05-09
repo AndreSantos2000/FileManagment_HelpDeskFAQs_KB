@@ -21,7 +21,7 @@ class File(db.Model):
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.before_first_request
+@app.got_first_request
 def create_tables():
     db.create_all()
 
