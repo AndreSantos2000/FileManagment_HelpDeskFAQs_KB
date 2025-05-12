@@ -5,8 +5,6 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# flask-cors no longer necessary in requirements.txt
-
 # Configure database (PostgreSQL in production, fallback to SQLite locally)
 #app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///my_files.db")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "postgresql://postgres_myfiles_user:eAvlAnLLSQUwqmiiEZo290PkiUqa1YDN@dpg-d0ebu60dl3ps73bj9omg-a.frankfurt-postgres.render.com/postgres_myfiles")
