@@ -38,7 +38,8 @@ def upload():
     if not file:
         return jsonify({"error": "No file uploaded"}), 400
 
-    filename = secure_filename(file.filename)
+    #filename = secure_filename(file.filename)
+    filename = secure_filename(file.nome)
     #filepath = os.path.join(UPLOAD_FOLDER, filename)
     filepath = filename
     file.save(filepath)
