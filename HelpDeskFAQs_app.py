@@ -15,12 +15,16 @@ db = SQLAlchemy(app)
 # File model
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(200), nullable=False)
-    filepath = db.Column(db.String(300), nullable=False)
+    tema_id = db.Column(db.Integer, nullable=False)
+    tema_desc = db.Column(db.String(200))
+    tema_master_id = db.Column(db.Integer)
+    tema_master_desc = db.Column(db.String(200))
+    nome = db.Column(db.String(200))
+    ficheiro = db.Column(db.String(300))
 
 # Ensure upload directory exists
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+#UPLOAD_FOLDER = "uploads"
+#os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route("/")
 def index():
@@ -37,8 +41,12 @@ def upload():
     #filepath = os.path.join(UPLOAD_FOLDER, filename)
     filepath = filename
     file.save(filepath)
+    tema_id = 0
+    tema_desc = "aplicações"
+    #tema_master_id = 
+    #tema_master_desc = 
 
-    new_file = File(filename=filename, filepath=filepath)
+    new_file = File(tema_id, tema_desc, nome=filename, ficheiro=filepath)
     db.session.add(new_file)
     db.session.commit()
 
