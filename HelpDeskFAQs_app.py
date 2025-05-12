@@ -57,7 +57,7 @@ def upload():
 @app.route("/files", methods=["GET"])
 def list_files():
     files = FAQ_file.query.all()
-    return jsonify([{"id": f.id, "name": f.filename, "tema": f.tema_desc, "tema_parent": f.tema_master_desc} for f in files])
+    return jsonify([{"id": f.id, "name": f.nome, "tema": f.tema_desc, "tema_parent": f.tema_master_desc} for f in files])
 
 @app.route("/download/<int:file_id>", methods=["GET"])
 def download(file_id):
@@ -79,13 +79,13 @@ def delete(file_id):
 def view_file(file_id):
     file = FAQ_file.query.get_or_404(file_id)
     print(file.filepath)
-    if not file.filename.lower().endswith(".txt"):
+    if not file.nome.lower().endswith(".txt"):
         return jsonify({"error": "Only .txt files can be viewed"}), 400
 
     try:
         with open(file.filepath, "r", encoding="utf-8") as f:
             content = f.read()
-        return jsonify({"filename": file.filename, "content": content})
+        return jsonify({"filename": file.nome, "content": content})
     except Exception as e:
         return jsonify({"error": f"Could not read file: {str(e)}"}), 500
 
