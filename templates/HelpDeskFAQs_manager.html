@@ -58,7 +58,7 @@
     }
 
     async function viewText(id) {
-    const res = await fetch(`http://localhost:5000/text/${id}`);
+    const res = await fetch(`/view/${id}`);
     const text = await res.text();
     document.getElementById('fileContent').textContent = text;
     }
