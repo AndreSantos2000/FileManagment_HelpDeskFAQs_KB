@@ -62,13 +62,13 @@ def list_files():
 @app.route("/download/<int:file_id>", methods=["GET"])
 def download(file_id):
     file = FAQ_file.query.get_or_404(file_id)
-    return send_file(file.filepath, as_attachment=True)
+    return send_file(file.ficheiro, as_attachment=True)
 
 @app.route("/delete/<int:file_id>", methods=["DELETE"])
 def delete(file_id):
     file = FAQ_file.query.get_or_404(file_id)
     try:
-        os.remove(file.filepath)
+        os.remove(file.ficheiro)
     except FileNotFoundError:
         pass
     db.session.delete(file)
@@ -78,12 +78,12 @@ def delete(file_id):
 @app.route("/view/<int:file_id>", methods=["GET"])
 def view_file(file_id):
     file = FAQ_file.query.get_or_404(file_id)
-    print(file.filepath)
+    print(file.ficheiro)
     if not file.nome.lower().endswith(".txt"):
         return jsonify({"error": "Only .txt files can be viewed"}), 400
 
     try:
-        with open(file.filepath, "r", encoding="utf-8") as f:
+        with open(file.ficheiro, "r", encoding="utf-8") as f:
             content = f.read()
         return jsonify({"filename": file.nome, "content": content})
     except Exception as e:
