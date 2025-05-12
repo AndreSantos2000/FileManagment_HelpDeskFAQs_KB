@@ -12,8 +12,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# File model
-class File(db.Model):
+# File model 
+# New "FAQ_file" model
+class FAQ_file(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tema_id = db.Column(db.Integer, nullable=False)
     tema_desc = db.Column(db.String(200))
@@ -46,7 +47,7 @@ def upload():
     #tema_master_id = 
     #tema_master_desc = 
 
-    new_file = File(tema_id, tema_desc, nome=filename, ficheiro=filepath)
+    new_file = FAQ_file(tema_id, tema_desc, nome=filename, ficheiro=filepath)
     db.session.add(new_file)
     db.session.commit()
 
@@ -54,17 +55,17 @@ def upload():
 
 @app.route("/files", methods=["GET"])
 def list_files():
-    files = File.query.all()
+    files = FAQ_file.query.all()
     return jsonify([{"id": f.id, "name": f.filename, "tema": f.tema_desc, "tema_parent": f.tema_master_desc} for f in files])
 
 @app.route("/download/<int:file_id>", methods=["GET"])
 def download(file_id):
-    file = File.query.get_or_404(file_id)
+    file = FAQ_file.query.get_or_404(file_id)
     return send_file(file.filepath, as_attachment=True)
 
 @app.route("/delete/<int:file_id>", methods=["DELETE"])
 def delete(file_id):
-    file = File.query.get_or_404(file_id)
+    file = FAQ_file.query.get_or_404(file_id)
     try:
         os.remove(file.filepath)
     except FileNotFoundError:
@@ -75,7 +76,7 @@ def delete(file_id):
 
 @app.route("/view/<int:file_id>", methods=["GET"])
 def view_file(file_id):
-    file = File.query.get_or_404(file_id)
+    file = FAQ_file.query.get_or_404(file_id)
     print(file.filepath)
     if not file.filename.lower().endswith(".txt"):
         return jsonify({"error": "Only .txt files can be viewed"}), 400
