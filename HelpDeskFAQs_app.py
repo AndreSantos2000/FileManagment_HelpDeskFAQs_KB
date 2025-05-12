@@ -47,7 +47,7 @@ def upload():
     #tema_master_id = 
     #tema_master_desc = 
 
-    new_file = FAQ_file(tema_id, tema_desc, nome=filename, ficheiro=filepath)
+    new_file = FAQ_file(tema_id = tema_id, tema_desc = tema_desc, nome=filename, ficheiro=filepath)
     db.session.add(new_file)
     db.session.commit()
 
