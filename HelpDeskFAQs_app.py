@@ -33,7 +33,8 @@ def upload():
         return jsonify({"error": "No file uploaded"}), 400
 
     filename = secure_filename(file.filename)
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
+    #filepath = os.path.join(UPLOAD_FOLDER, filename)
+    filepath = filename
     file.save(filepath)
 
     new_file = File(filename=filename, filepath=filepath)
