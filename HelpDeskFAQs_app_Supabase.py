@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, render_template, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from supabase import create_client, Client
+from werkzeug.utils import secure_filename
 #from dotenv import load_dotenv
 
 #load_dotenv()
@@ -19,7 +20,12 @@ SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET")
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255))
-    content_type = db.Column(db.String(255))
+    type_id = db.Column(db.Integer)
+    type_desc = db.Column(db.string(255))
+    master_type_id = db.Column(db.Integer)
+    master_type_desc = db.Column(db.string(255))
+    mime_type = db.Column(db.String(255))
+    filepath = db.Column(db.Blob(255))
 
 
 @app.route("/")
@@ -31,15 +37,35 @@ def index():
 @app.route("/upload", methods=["POST"])
 def upload():
     file = request.files["file"]
-    if file:
-        filepath = f"{file.filename}"
-        # Upload to Supabase
-        supabase.storage.from_(SUPABASE_BUCKET).upload(filepath, file.stream)
-        # Save metadata
-        new_file = File(filename=file.filename, content_type=file.content_type)
-        db.session.add(new_file)
-        db.session.commit()
-    return redirect("/")
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    filename = secure_filename(file.filename)
+    #filepath = os.path.join(UPLOAD_FOLDER, filename)
+    filepath = filename
+    file.save(filepath)
+    tema_id = 0
+    tema_desc = "aplicações"
+    #tema_master_id = 
+    #tema_master_desc = 
+
+    # Read file content as bytes
+    #file_data = file.read()
+    #supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_data)
+
+    # Save metadata to DB
+    tema_id = 0
+    tema_desc = "aplicações"
+    new_file = File(
+        tema_id=tema_id,
+        tema_desc=tema_desc,
+        filename=filename,
+        filepath=filepath
+    )
+    db.session.add(new_file)
+    db.session.commit()
+
+    return jsonify({"message": "File uploaded successfully."})
 
 
 @app.route("/download/<int:file_id>")
