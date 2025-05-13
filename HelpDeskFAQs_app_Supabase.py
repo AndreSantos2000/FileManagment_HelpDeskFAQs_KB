@@ -50,8 +50,8 @@ def upload():
     #tema_master_desc = 
 
     # Read file content as bytes
-    #file_data = file.read()
-    #supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_data)
+    file_data = file.read()
+    supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_data)
 
     # Save metadata to DB
     new_file = File(
