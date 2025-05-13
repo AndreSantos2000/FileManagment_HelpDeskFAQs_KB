@@ -76,7 +76,7 @@ def download(file_id):
     file_record = File.query.get_or_404(file_id)
 
     # Ensure the storage path is correct (e.g., uploads/filename.txt)
-    storage_path = file_record.ficheiro
+    storage_path = file_record.filepath
 
     try:
         # Download file content from Supabase Storage
@@ -86,7 +86,7 @@ def download(file_id):
         file_stream = BytesIO(response)
 
         # Send the file to the client as an attachment
-        return send_file(file_stream, download_name=file_record.nome, as_attachment=True)
+        return send_file(file_stream, download_name=file_record.filename, as_attachment=True)
     
     except Exception as e:
         return jsonify({"error": f"Download failed: {str(e)}"}), 500
