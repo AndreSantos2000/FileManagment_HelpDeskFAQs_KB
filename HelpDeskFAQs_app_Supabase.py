@@ -57,8 +57,8 @@ def upload():
     tema_id = 0
     tema_desc = "aplicações"
     new_file = File(
-        tema_id=tema_id,
-        tema_desc=tema_desc,
+        type_id=tema_id,
+        type_desc=tema_desc,
         filename=filename,
         filepath=filepath
     )
