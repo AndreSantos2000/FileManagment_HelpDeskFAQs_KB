@@ -54,8 +54,6 @@ def upload():
     #supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_data)
 
     # Save metadata to DB
-    tema_id = 0
-    tema_desc = "aplicações"
     new_file = File(
         type_id=tema_id,
         type_desc=tema_desc,
@@ -67,6 +65,10 @@ def upload():
 
     return jsonify({"message": "File uploaded successfully."})
 
+@app.route("/files", methods=["GET"])
+def list_files():
+    files = File.query.all()
+    return jsonify([{"id": f.id, "filename": f.filename, "tema": f.type_desc, "tema_parent": f.master_type_desc} for f in files])
 
 @app.route("/download/<int:file_id>")
 def download(file_id):
