@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request, render_template, redirect, jsonify
+from flask import Flask, request, render_template, redirect, jsonify, send_file
+from io import BytesIO
 from flask_sqlalchemy import SQLAlchemy
 from supabase import create_client, Client
 from werkzeug.utils import secure_filename
@@ -70,17 +71,28 @@ def list_files():
     files = File.query.all()
     return jsonify([{"id": f.id, "filename": f.filename, "tema": f.type_desc, "tema_parent": f.master_type_desc} for f in files])
 
-@app.route("/download/<int:file_id>")
+@app.route("/download/<int:file_id>", methods=["GET"])
 def download(file_id):
-    file = File.query.get(file_id)
-    if not file:
-        return "File not found", 404
-    # Generate signed URL (valid 1 hour)
-    res = supabase.storage.from_(SUPABASE_BUCKET).create_signed_url(file.filename, 3600)
-    return redirect(res['signedURL'])
+    file_record = File.query.get_or_404(file_id)
+
+    # Ensure the storage path is correct (e.g., uploads/filename.txt)
+    storage_path = file_record.ficheiro
+
+    try:
+        # Download file content from Supabase Storage
+        response = supabase.storage.from_(SUPABASE_BUCKET).download(storage_path)
+
+        # Wrap it in BytesIO so Flask can treat it like a file
+        file_stream = BytesIO(response)
+
+        # Send the file to the client as an attachment
+        return send_file(file_stream, download_name=file_record.nome, as_attachment=True)
+    
+    except Exception as e:
+        return jsonify({"error": f"Download failed: {str(e)}"}), 500
 
 
-@app.route("/view/<int:file_id>")
+@app.route("/view/<int:file_id>", methods=["GET"])
 def view(file_id):
     file = File.query.get(file_id)
     if not file or not file.filename.endswith(".txt"):
