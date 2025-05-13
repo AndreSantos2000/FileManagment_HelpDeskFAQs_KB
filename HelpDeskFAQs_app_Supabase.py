@@ -1,95 +1,79 @@
 import os
-from flask import Flask, request, jsonify, send_file, render_template
+from flask import Flask, request, render_template, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.utils import secure_filename
+from supabase import create_client, Client
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-
-# Configure database (PostgreSQL in production, fallback to SQLite locally)
-#app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///my_files.db")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "postgresql://postgres_myfiles_user:eAvlAnLLSQUwqmiiEZo290PkiUqa1YDN@dpg-d0ebu60dl3ps73bj9omg-a.frankfurt-postgres.render.com/postgres_myfiles")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 
-# File model 
-# New "FAQ_file" model
-class FAQ_file(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    tema_id = db.Column(db.Integer, nullable=False)
-    tema_desc = db.Column(db.String(200))
-    tema_master_id = db.Column(db.Integer)
-    tema_master_desc = db.Column(db.String(200))
-    nome = db.Column(db.String(200))
-    ficheiro = db.Column(db.String(300))
+# Supabase init
+supabase: Client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET")
 
-# Ensure upload directory exists
-#UPLOAD_FOLDER = "uploads"
-#os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+class File(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255))
+    content_type = db.Column(db.String(255))
+
 
 @app.route("/")
 def index():
-    #return render_template("index.html")
-    return render_template("HelpDeskFAQs_manager.html")
+    files = File.query.all()
+    return render_template("HelpDeskFAQs_manager.html", files=files)
+
 
 @app.route("/upload", methods=["POST"])
 def upload():
     file = request.files["file"]
-    if not file:
-        return jsonify({"error": "No file uploaded"}), 400
+    if file:
+        filepath = f"{file.filename}"
+        # Upload to Supabase
+        supabase.storage.from_(SUPABASE_BUCKET).upload(filepath, file.stream)
+        # Save metadata
+        new_file = File(filename=file.filename, content_type=file.content_type)
+        db.session.add(new_file)
+        db.session.commit()
+    return redirect("/")
 
-    filename = secure_filename(file.filename)
-    #filepath = os.path.join(UPLOAD_FOLDER, filename)
-    filepath = filename
-    file.save(filepath)
-    tema_id = 0
-    tema_desc = "aplicações"
-    #tema_master_id = 
-    #tema_master_desc = 
 
-    new_file = FAQ_file(tema_id = tema_id, tema_desc = tema_desc, nome=filename, ficheiro=filepath)
-    db.session.add(new_file)
-    db.session.commit()
-
-    return jsonify({"message": "File uploaded successfully."})
-
-@app.route("/files", methods=["GET"])
-def list_files():
-    files = FAQ_file.query.all()
-    return jsonify([{"id": f.id, "name": f.nome, "tema": f.tema_desc, "tema_parent": f.tema_master_desc} for f in files])
-
-@app.route("/download/<int:file_id>", methods=["GET"])
+@app.route("/download/<int:file_id>")
 def download(file_id):
-    file = FAQ_file.query.get_or_404(file_id)
-    return send_file(file.ficheiro, as_attachment=True)
+    file = File.query.get(file_id)
+    if not file:
+        return "File not found", 404
+    # Generate signed URL (valid 1 hour)
+    res = supabase.storage.from_(SUPABASE_BUCKET).create_signed_url(file.filename, 3600)
+    return redirect(res['signedURL'])
 
-@app.route("/delete/<int:file_id>", methods=["DELETE"])
+
+@app.route("/view/<int:file_id>")
+def view(file_id):
+    file = File.query.get(file_id)
+    if not file or not file.filename.endswith(".txt"):
+        return "Not a viewable .txt file", 400
+    # Download the file content
+    res = supabase.storage.from_(SUPABASE_BUCKET).download(file.filename)
+    content = res.decode("utf-8")
+    return jsonify({"content": content})
+
+
+@app.route("/delete/<int:file_id>", methods=["POST"])
 def delete(file_id):
-    file = FAQ_file.query.get_or_404(file_id)
-    try:
-        os.remove(file.ficheiro)
-    except FileNotFoundError:
-        pass
-    db.session.delete(file)
-    db.session.commit()
-    return jsonify({"message": "File deleted."})
+    file = File.query.get(file_id)
+    if file:
+        supabase.storage.from_(SUPABASE_BUCKET).remove([file.filename])
+        db.session.delete(file)
+        db.session.commit()
+    return redirect("/")
 
-@app.route("/view/<int:file_id>", methods=["GET"])
-def view_file(file_id):
-    file = FAQ_file.query.get_or_404(file_id)
-    print(file.ficheiro)
-    if not file.nome.lower().endswith(".txt"):
-        return jsonify({"error": "Only .txt files can be viewed"}), 400
-
-    try:
-        with open(file.ficheiro, "r", encoding="utf-8") as f:
-            content = f.read()
-        return jsonify({"filename": file.nome, "content": content})
-    except Exception as e:
-        return jsonify({"error": f"Could not read file: {str(e)}"}), 500
-
-with app.app_context():
-    db.create_all()
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(host="0.0.0.0", port=5000)
