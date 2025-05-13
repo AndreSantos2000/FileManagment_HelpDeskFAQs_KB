@@ -91,7 +91,7 @@ def view(file_id):
     return jsonify({"content": content})
 
 
-@app.route("/delete/<int:file_id>", methods=["POST"])
+@app.route("/delete/<int:file_id>", methods=["DELETE"])
 def delete(file_id):
     file = File.query.get(file_id)
     if file:
