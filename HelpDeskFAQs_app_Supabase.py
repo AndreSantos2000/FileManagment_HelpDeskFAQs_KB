@@ -25,7 +25,7 @@ class File(db.Model):
     master_type_id = db.Column(db.Integer)
     master_type_desc = db.Column(db.String(255))
     mime_type = db.Column(db.String(255))
-    filepath = db.Column(db.BLOB(255))
+    filepath = db.Column(db.String(300))
 
 
 @app.route("/")
