@@ -19,15 +19,15 @@
             <tbody>
                 {% for file in files %}
                 <tr>
-                    <td>{{ file.nome }}</td>
-                    <td>{{ file.tema_desc or '—' }}</td>
-                    <td>
-                        {% if file.nome.endswith('.txt') %}
+                    <td>{{ file.filename }}</td>
+                    <td>{{ file.type_desc or '—' }}</td>
+                    <!--<td>
+                        {% if file.filename.endswith('.txt') %}
                         <button class="btn btn-primary btn-sm" onclick="viewContent(${file.id})">View</button>
                         {% else %}
                         <span class="text-muted">Not a text file</span>
                         {% endif %}
-                    </td>
+                    </td>-->
                 </tr>
                 {% endfor %}
             </tbody>
