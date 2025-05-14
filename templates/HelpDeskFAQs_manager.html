@@ -16,7 +16,19 @@
     </div>
   </form>
 
-  <ul id="fileList" class="list-group mb-4"></ul>
+  <!--<ul id="fileList" class="list-group mb-4"></ul>-->
+
+  <table class="table table-bordered table-hover mb-4" id="fileTable">
+  <thead class="table-light">
+    <tr>
+      <th>Nome do ficheiro</th>
+      <th>Tema</th>
+      <th>Tema_pai</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody id="fileList"></tbody>
+</table>
 
   <div class="card p-3 shadow-sm">
     <h4>Text File Content</h4>
@@ -50,7 +62,7 @@
       const files = await res.json();
       fileList.innerHTML = "";
 
-      files.forEach(file => {
+      /*files.forEach(file => {
         const isTxt = file.filename.toLowerCase().endsWith(".txt");
         const item = document.createElement("li");
         item.className = "list-group-item d-flex justify-content-between align-items-center";
@@ -63,6 +75,22 @@
           </span>
         `;
         fileList.appendChild(item);
+      });*/
+      files.forEach(file => {
+        const isTxt = file.filename.toLowerCase().endsWith(".txt");
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${file.filename}</td>
+          <td>${file.type_desc}</td>
+          <td>${file.master_type_desc}</td>
+          <td>
+          <a href="/download/${file.id}" class="btn btn-sm btn-success me-1">Download</a>
+          ${isTxt ? `<button onclick="viewText(${file.id})" class="btn btn-sm btn-info me-1">View</button>` : ""}
+          <button onclick="deleteFile(${file.id})" class="btn btn-sm btn-danger">Delete</button>
+          </td>
+        `;
+        fileList.appendChild(row);
       });
     }
 
