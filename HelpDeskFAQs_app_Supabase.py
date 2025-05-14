@@ -37,39 +37,30 @@ def index():
 
 @app.route("/upload", methods=["POST"])
 def upload():
-    file = request.files("file")
-    #file = request.files.get("file")
-    if not file:
-        return jsonify({"error": "No file uploaded"}), 400
-
-    filename = secure_filename(file.filename)
-    #filepath = os.path.join(UPLOAD_FOLDER, filename)
-
     try:
-        file_data = file.read()
+        file = request.files.get("file")
+        if not file:
+            return jsonify({"error": "No file provided"}), 400
 
+        filename = secure_filename(file.filename)
+        #storage_path = f"uploads/{filename}"
+
+        file_data = file.read()
         if len(file_data) == 0:
             return jsonify({"error": "Uploaded file is empty"}), 400
 
-        supabase.storage.from_(SUPABASE_BUCKET).upload(file_data, {"content-type": file.content_type})
+        # Upload to Supabase Storage
+        res = supabase.storage.from_(SUPABASE_BUCKET).upload(
+            filename, file_data, {"content-type": file.content_type}
+        )
+        print("Supabase upload response:", res)
 
-        filepath = filename
-        #file.save(filepath)
-        tema_id = 0
-        tema_desc = "aplicações"
-        #tema_master_id = 
-        #tema_master_desc = 
-
-        # Read file content as bytes
-        #file_data = file.read()
-        #supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_data)
-
-        # Save metadata to DB
+        # Save metadata to database
         new_file = File(
-            type_id=tema_id,
-            type_desc=tema_desc,
+            type_id=0,
+            type_desc="aplicações",
             filename=filename,
-            filepath=filepath
+            filepath=filename
         )
         db.session.add(new_file)
         db.session.commit()
@@ -77,6 +68,7 @@ def upload():
         return jsonify({"message": "File uploaded successfully."}), 200
 
     except Exception as e:
+        print("Upload error:", e)  # <--- this helps!
         return jsonify({"error": f"Upload failed: {str(e)}"}), 500
 
 @app.route("/files", methods=["GET"])
