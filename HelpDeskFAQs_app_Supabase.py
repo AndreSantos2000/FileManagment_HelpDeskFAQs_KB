@@ -115,7 +115,7 @@ def delete(file_id):
         supabase.storage.from_(SUPABASE_BUCKET).remove([file.filename])
         db.session.delete(file)
         db.session.commit()
-    return redirect("/")
+    return jsonify({"message": f"File {file_id} deleted successfully."}), 200
 
 
 if __name__ == "__main__":
