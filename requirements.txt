@@ -3,3 +3,4 @@ flask_sqlalchemy
 psycopg2-binary
 python-dotenv
 supabase
+PyMuPDF>=1.22.5
