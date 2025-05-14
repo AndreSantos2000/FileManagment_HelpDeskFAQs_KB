@@ -37,34 +37,46 @@ def index():
 
 @app.route("/upload", methods=["POST"])
 def upload():
-    file = request.files["file"]
+    file = request.files.get["file"]
     if not file:
         return jsonify({"error": "No file uploaded"}), 400
 
     filename = secure_filename(file.filename)
     #filepath = os.path.join(UPLOAD_FOLDER, filename)
-    filepath = filename
-    file.save(filepath)
-    tema_id = 0
-    tema_desc = "aplicações"
-    #tema_master_id = 
-    #tema_master_desc = 
 
-    # Read file content as bytes
-    file_data = file.read()
-    supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_data)
+    try:
+        file_data = file.read()
 
-    # Save metadata to DB
-    new_file = File(
-        type_id=tema_id,
-        type_desc=tema_desc,
-        filename=filename,
-        filepath=filepath
-    )
-    db.session.add(new_file)
-    db.session.commit()
+        if len(file_data) == 0:
+            return jsonify({"error": "Uploaded file is empty"}), 400
 
-    return jsonify({"message": "File uploaded successfully."})
+        supabase.storage.from_(SUPABASE_BUCKET).upload(file_data, {"content-type": file.content_type})
+
+        filepath = filename
+        file.save(filepath)
+        tema_id = 0
+        tema_desc = "aplicações"
+        #tema_master_id = 
+        #tema_master_desc = 
+
+        # Read file content as bytes
+        #file_data = file.read()
+        #supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_data)
+
+        # Save metadata to DB
+        new_file = File(
+            type_id=tema_id,
+            type_desc=tema_desc,
+            filename=filename,
+            filepath=filepath
+        )
+        db.session.add(new_file)
+        db.session.commit()
+
+        return jsonify({"message": "File uploaded successfully."}), 200
+
+    except Exception as e:
+        return jsonify({"error": f"Upload failed: {str(e)}"}), 500
 
 @app.route("/files", methods=["GET"])
 def list_files():
