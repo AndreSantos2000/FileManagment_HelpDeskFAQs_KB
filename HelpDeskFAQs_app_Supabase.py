@@ -4,7 +4,7 @@ from io import BytesIO
 from flask_sqlalchemy import SQLAlchemy
 from supabase import create_client, Client
 from werkzeug.utils import secure_filename
-import fitz  # PyMuPDF
+import fitz #PyMuPDF
 #from dotenv import load_dotenv
 
 #load_dotenv()
@@ -46,7 +46,7 @@ def view_page():
     content_list = []
 
     for file in files:
-        if not file.nome.lower().endswith(".pdf"):
+        if not file.filename.lower().endswith(".pdf"):
             continue
         
         try:
@@ -60,12 +60,12 @@ def view_page():
             doc.close()
 
             content_list.append({
-                "filename": file.nome,
+                "filename": file.filename,
                 "text": text
             })
         except Exception as e:
             content_list.append({
-                "filename": file.nome,
+                "filename": file.filename,
                 "text": f"Error loading file: {str(e)}"
             })
 
