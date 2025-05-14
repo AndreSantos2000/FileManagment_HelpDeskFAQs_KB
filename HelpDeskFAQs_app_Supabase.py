@@ -53,7 +53,7 @@ def upload():
         supabase.storage.from_(SUPABASE_BUCKET).upload(file_data, {"content-type": file.content_type})
 
         filepath = filename
-        file.save(filepath)
+        #file.save(filepath)
         tema_id = 0
         tema_desc = "aplicações"
         #tema_master_id = 
