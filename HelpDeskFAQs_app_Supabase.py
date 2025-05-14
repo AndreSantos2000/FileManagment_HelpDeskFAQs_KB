@@ -4,6 +4,7 @@ from io import BytesIO
 from flask_sqlalchemy import SQLAlchemy
 from supabase import create_client, Client
 from werkzeug.utils import secure_filename
+import fitz  # PyMuPDF
 #from dotenv import load_dotenv
 
 #load_dotenv()
@@ -34,10 +35,42 @@ def index():
     files = File.query.all()
     return render_template("HelpDeskFAQs_manager.html", files=files)
 
+#@app.route("/viewPage")
+#def view_page():
+#    files = File.query.all()
+#    return render_template("HelpDeskFAQs_viewer.html", files=files)
+
 @app.route("/viewPage")
 def view_page():
     files = File.query.all()
-    return render_template("HelpDeskFAQs_viewer.html", files=files)
+    content_list = []
+
+    for file in files:
+        if not file.nome.lower().endswith(".pdf"):
+            continue
+        
+        try:
+            # Download file from Supabase bucket
+            response = supabase.storage.from_("faqfiles").download(file.ficheiro)
+            pdf_bytes = response  # This is bytes
+
+            # Use PyMuPDF to extract text
+            doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+            text = "\n".join([page.get_text() for page in doc])
+            doc.close()
+
+            content_list.append({
+                "filename": file.nome,
+                "text": text
+            })
+        except Exception as e:
+            content_list.append({
+                "filename": file.nome,
+                "text": f"Error loading file: {str(e)}"
+            })
+
+    return render_template("HelpDeskFAQs_viewer.html", files=content_list)
+
 
 
 @app.route("/upload", methods=["POST"])
