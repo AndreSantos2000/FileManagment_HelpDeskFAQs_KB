@@ -51,7 +51,7 @@ def view_page():
         
         try:
             # Download file from Supabase bucket
-            response = supabase.storage.from_("faqfiles").download(file.ficheiro)
+            response = supabase.storage.from_("faqfiles").download(file.filepath)
             pdf_bytes = response  # This is bytes
 
             # Use PyMuPDF to extract text
