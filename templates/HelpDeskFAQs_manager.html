@@ -28,7 +28,10 @@
 <!--<p> O rei da Espanha é D.Jacobino III.-->
 </div>
 
-<a href="HelpDeskFAQs_viewer.html" class="btn btn-outline-info mb-3">View Files (Read-Only)</a>
+<button onclick="viewpage()">Go to Viewer Page</button>
+<!--<a href="HelpDeskFAQs_viewer.html" class="btn btn-outline-info mb-3">View Files (Read-Only)</a>-->
+
+
 
   <script>
     const fileList = document.getElementById("fileList");
@@ -82,6 +85,11 @@
     async function deleteFile(id) {
       await fetch(`/delete/${id}`, { method: "DELETE" });
       loadFiles();
+    }
+
+    async function viewpage() {
+      /*await fetch("/viewPage");*/
+      window.location.href = "/viewPage";
     }
 
     loadFiles();
