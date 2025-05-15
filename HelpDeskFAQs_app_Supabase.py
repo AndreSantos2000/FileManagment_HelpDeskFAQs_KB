@@ -33,7 +33,7 @@ class File(db.Model):
 @app.route("/managePage")
 def index():
     files = File.query.all()
-    return render_template("HelpDeskFAQs_viewer.html", files=files)
+    return render_template("HelpDeskFAQs_manager.html", files=files)
 
 #@app.route("/viewPage")
 #def view_page():
