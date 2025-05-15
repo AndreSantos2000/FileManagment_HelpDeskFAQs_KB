@@ -51,6 +51,7 @@ def view_page():
             doc.close()
 
             content_list.append({
+                "id": file.id,
                 "filename": file.filename,
                 "text": text
             })
