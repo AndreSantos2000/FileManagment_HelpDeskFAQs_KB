@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Viewer Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">📄 File Viewer</a>
+      <div class="d-flex">
+        <a href="/" class="btn btn-outline-primary">🔧 Go to Manager</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2 class="mb-4">All PDF File Contents</h2>
+    <ul id="viewerList" class="list-group"></ul>
+  </div>
+
+  <script>
+    async function loadViewerFiles() {
+      const res = await fetch("/files");
+      const files = await res.json();
+      const viewerList = document.getElementById("viewerList");
+      viewerList.innerHTML = "";
+
+      for (const file of files) {
+        if (!file.filename.toLowerCase().endsWith(".pdf")) continue;
+
+        // Fetch file text content
+        const contentRes = await fetch(`/view/${file.id}`);
+        const data = await contentRes.json();
+        const content = data.content || "[No content extracted]";
+
+        const item = document.createElement("li");
+        item.className = "list-group-item mb-3 shadow-sm";
+
+        item.innerHTML = `
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5 class="mb-1">${file.filename}</h5>
+              <p class="mb-1">
+                <strong>Type:</strong> ${file.type_desc || "—"} |
+                <strong>Master Type:</strong> ${file.master_type_desc || "—"}
+              </p>
+              <pre class="bg-light p-3 rounded" style="max-height: 300px; overflow-y: auto; white-space: pre-wrap;">${content}</pre>
+            </div>
+            <div class="ms-3">
+              <a href="/download/${file.id}" class="btn btn-sm btn-success mb-2">⬇ Download</a>
+            </div>
+          </div>
+        `;
+
+        viewerList.appendChild(item);
+      }
+    }
+
+    loadViewerFiles();
+  </script>
+</body>
+</html>
