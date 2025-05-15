@@ -2,56 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📄 View Files</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body class="p-4">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">HelpDesk FAQs</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="/">Manage Files</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/viewPage">View Files</a></li>
-        </ul>
-      </div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">📄 File Viewer</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <!--<a class="nav-link" href="/">Manage Files</a>-->
+          <a class="nav-link" href="/managePage">Manage Files</a>
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <h1 class="mb-4">📄 File Viewer</h1>
-  <div id="fileContainer" class="row row-cols-1 g-4"></div>
+<div class="container">
+  <h2 class="mb-4">View PDF Contents</h2>
 
-  <script>
-    async function loadFileContents() {
-      const res = await fetch("/files");
-      const files = await res.json();
-      const container = document.getElementById("fileContainer");
-      container.innerHTML = "";
+  {% for file in files %}
+  <div class="card mb-3 shadow">
+    <div class="card-header">
+      <strong>{{ file.filename }}</strong>
+      <a href="/download/${file.id}" class="btn btn-sm btn-success me-1">Download</a>
+    </div>
+    <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+      <pre class="text-wrap">{{ file.text }}</pre>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 
-      for (const file of files) {
-        if (file.name.toLowerCase().endsWith(".pdf")) {
-          const contentRes = await fetch(`/view/${file.id}`);
-          const data = await contentRes.json();
-          const content = data.content || "Could not load content";
-
-          const col = document.createElement("div");
-          col.className = "col";
-          col.innerHTML = `
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">${file.name}</h5>
-                <pre class="card-text" style="white-space: pre-wrap; max-height: 300px; overflow-y: auto;">${content}</pre>
-                <a href="/download/${file.id}" class="btn btn-sm btn-success mt-2">Download</a>
-              </div>
-            </div>
-          `;
-          container.appendChild(col);
-        }
-      }
-    }
-
-    loadFileContents();
-  </script>
 </body>
 </html>
