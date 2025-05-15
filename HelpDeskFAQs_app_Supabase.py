@@ -111,7 +111,7 @@ def upload():
 @app.route("/files", methods=["GET"])
 def list_files():
     files = File.query.all()
-    return jsonify([{"id": f.id, "filename": f.filename, "tema": f.type_desc, "tema_parent": f.master_type_desc} for f in files])
+    return jsonify([{"id": f.id, "filename": f.filename, "type_desc": f.type_desc, "master_type_desc": f.master_type_desc} for f in files])
 
 @app.route("/download/<int:file_id>", methods=["GET"])
 def download(file_id):
