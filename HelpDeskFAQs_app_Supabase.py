@@ -30,7 +30,7 @@ class File(db.Model):
     filepath = db.Column(db.String(300))
 
 
-@app.route("/")
+@app.route("/managePage")
 def index():
     files = File.query.all()
     return render_template("HelpDeskFAQs_viewer.html", files=files)
@@ -40,7 +40,8 @@ def index():
 #    files = File.query.all()
 #    return render_template("HelpDeskFAQs_viewer.html", files=files)
 
-@app.route("/viewPage")
+#@app.route("/viewPage")
+@app.route("/")
 def view_page():
     files = File.query.all()
     content_list = []
