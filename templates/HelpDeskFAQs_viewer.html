@@ -51,7 +51,6 @@
         {% set parts = paragraph.strip().split('.', 1) %}
         {% if parts|length > 1 %}
           {% set subparts = parts[1].split(" ", 1)[1] %}
-          {% set text = subparts.split(" ", 1)[1] %}
           <p>{{ subparts.strip() }}</p>
         {% endif %}
       {% endfor %}
