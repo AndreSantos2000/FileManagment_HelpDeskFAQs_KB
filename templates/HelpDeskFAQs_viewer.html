@@ -47,6 +47,11 @@
     <a href="/download/{{ file.id }}" class="btn btn-sm btn-success mb-3">Download</a>
     <section>
       {% for paragraph in file.text.split('\n\n') %}
+        <p>{{ paragraph.strip() }}</p>
+      {% endfor %}
+    </section>
+    <section>
+      {% for paragraph in file.text.split('\n\n') %}
         <!--{% set parts = paragraph.strip().split('.', 1)[1] %}-->
         {% set parts = parts.strip().split(' ', 1) %}
         {% if parts|length > 1 %}
