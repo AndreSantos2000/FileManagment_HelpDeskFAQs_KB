@@ -27,18 +27,10 @@
   <h2 class="mb-4">📚 View PDF Contents</h2>
 
   {% for file in files %}
-  <div class="card mb-3 shadow">
-    <div class="card-header">
-      <strong>{{ file.filename }}</strong>
-    </div>
-    <div class="card-header">
-      <strong>{{ file.id }}</strong>
-      <a href="/download/{{ file.id }}" class="btn btn-sm btn-success me-1">Download</a>
-    </div>
-    
-    <div class="card-body" style="max-height: 400px; overflow-y: auto;">
-      <pre class="text-wrap">{{ file.text }}</pre>
-    </div>
+  <div>
+    <h4><strong>{{ file.filename }}</strong></h4>
+    <a href="/download/{{ file.id }}" class="btn btn-sm btn-success me-1">Download</a>
+    <pre class="text-wrap">{{ file.text }}</pre>
   </div>
   {% endfor %}
 </div>
