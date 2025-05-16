@@ -50,7 +50,9 @@
       {% for paragraph in file.text.split('\n\n') %}
         {% set parts = paragraph.strip().split('.', 1) %}
         {% if parts|length > 1 %}
-          <p>{{ parts[1].strip() }}</p>
+          subparts = parts[1].split(" ", 1)[1]
+          Text = subparts.split(" ", 1)[1]
+          <p>{{ Text.strip() }}</p>
         {% endif %}
       {% endfor %}
     </section>
