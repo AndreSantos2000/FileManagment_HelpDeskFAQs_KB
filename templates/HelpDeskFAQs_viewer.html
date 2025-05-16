@@ -51,6 +51,7 @@
       {% endfor %}
     </section>
     <section>
+      <h3> Secção processada </h3>
       {% for paragraph in file.text.split('\n\n') %}
         <!--{% set parts = paragraph.strip().split('.', 1)[1] %}-->
         {% set parts = parts.strip().split(' ', 1) %}
