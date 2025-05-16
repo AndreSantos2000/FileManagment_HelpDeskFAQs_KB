@@ -47,12 +47,12 @@
     <a href="/download/{{ file.id }}" class="btn btn-sm btn-success mb-3">Download</a>
     <section>
       {% for paragraph in file.text.split('\n\n') %}
-        <!--{% set parts = paragraph.strip().split('.', 2) %}-->
-        <!--{% set parts = paragraph.strip().split('.') %}
+        {% set parts = paragraph.split('.', 1) %}
+        <!--{% set subparts = parts.split(' ', 1) %}-->
         {% if parts|length > 1 %}
           <p>{{ parts[1].strip() }}</p>
-        {% endif %}-->
-        <p>{{ paragraph.strip() }}</p>
+        {% endif %}
+        <!--<p>{{ paragraph.strip() }}</p>-->
       {% endfor %}
     </section>
   </article>
