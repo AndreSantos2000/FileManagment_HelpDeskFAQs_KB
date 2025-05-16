@@ -50,7 +50,7 @@
         <!--{% set parts = paragraph.strip().split('.', 2) %}-->
         {% set parts = paragraph.split('.') %}
         {% if parts|length > 1 %}
-          <p>{{ parts[2].strip() }}</p>
+          <p>{{ parts[1].strip() }}</p>
         {% endif %}
       {% endfor %}
     </section>
