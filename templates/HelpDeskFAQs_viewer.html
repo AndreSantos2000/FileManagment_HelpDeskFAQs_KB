@@ -52,8 +52,7 @@
         {% if parts|length > 1 %}
           {% set subparts = parts[1].split(" ", 1)[1] %}
           {% set text = subparts.split(" ", 1)[1] %}
-          {% set relevant_text = text.split(" ", 1)[1] %}
-          <p>{{ relevant_text.strip() }}</p>
+          <p>{{ subparts.strip() }}</p>
         {% endif %}
       {% endfor %}
     </section>
