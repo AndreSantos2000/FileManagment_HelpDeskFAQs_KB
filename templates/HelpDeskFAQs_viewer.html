@@ -31,7 +31,7 @@
             <a class="nav-link" href="/">View Files</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/">Manage Files</a>
+          <a class="nav-link" href="/managePage">Manage Files</a>
         </li>
       </ul>
     </div>
@@ -39,15 +39,18 @@
 </nav>
 
 <div class="container">
-  <h2 class="mb-4">📚 View PDF Contents</h2>
+  <h2 class="mb-4"><!--📚-->View PDF Contents</h2>
 
   {% for file in files %}
   <article>
     <h2>{{ file.filename }}</h2>
-    <a href="/download/{{ file.id }}" class="btn btn-sm btn-success mb-3">⬇ Download</a>
+    <a href="/download/{{ file.id }}" class="btn btn-sm btn-success mb-3">Download</a>
     <section>
       {% for paragraph in file.text.split('\n\n') %}
-        <p>{{ paragraph.strip() }}</p>
+        {% set parts = paragraph.strip().split('.', 1) %}
+        {% if parts|length > 1 %}
+          <p>{{ parts[1].strip() }}</p>
+        {% endif %}
       {% endfor %}
     </section>
   </article>
