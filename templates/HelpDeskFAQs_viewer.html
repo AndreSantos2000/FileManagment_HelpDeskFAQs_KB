@@ -48,10 +48,11 @@
     <section>
       {% for paragraph in file.text.split('\n\n') %}
         <!--{% set parts = paragraph.strip().split('.', 2) %}-->
-        {% set parts = paragraph.split('.') %}
+        <!--{% set parts = paragraph.strip().split('.') %}
         {% if parts|length > 1 %}
           <p>{{ parts[1].strip() }}</p>
-        {% endif %}
+        {% endif %}-->
+        <p>{{ paragraph.strip() }}</p>
       {% endfor %}
     </section>
   </article>
