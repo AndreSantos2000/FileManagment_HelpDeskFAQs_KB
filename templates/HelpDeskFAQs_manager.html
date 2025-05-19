@@ -98,20 +98,22 @@
         fileList.appendChild(item);
       });*/
       files.forEach(file => {
-        const isTxt = file.filename.toLowerCase().endsWith(".txt");
-        const row = document.createElement("tr");
+        if (file.filename){
+          const isTxt = file.filename.toLowerCase().endsWith(".txt");
+          const row = document.createElement("tr");
 
-        row.innerHTML = `
-          <td>${file.filename}</td>
-          <td>${file.type_desc || "—"}</td>
-          <td>${file.master_type_desc || "—"}</td>
-          <td>
-          <a href="/download/${file.id}" class="btn btn-sm btn-success me-1">Download</a>
-          ${isTxt ? `<button onclick="viewText(${file.id})" class="btn btn-sm btn-info me-1">View</button>` : ""}
-          <button onclick="deleteFile(${file.id})" class="btn btn-sm btn-danger">Delete</button>
-          </td>
-        `;
-        fileList.appendChild(row);
+          row.innerHTML = `
+            <td>${file.filename}</td>
+            <td>${file.type_desc || "—"}</td>
+            <td>${file.master_type_desc || "—"}</td>
+            <td>
+            <a href="/download/${file.id}" class="btn btn-sm btn-success me-1">Download</a>
+            ${isTxt ? `<button onclick="viewText(${file.id})" class="btn btn-sm btn-info me-1">View</button>` : ""}
+            <button onclick="deleteFile(${file.id})" class="btn btn-sm btn-danger">Delete</button>
+            </td>
+          `;
+          fileList.appendChild(row);
+        }
       });
     }
 
