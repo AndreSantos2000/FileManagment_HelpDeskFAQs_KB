@@ -37,7 +37,7 @@
     </div>
   </form>-->
 
-  <form id="uploadForm" enctype="multipart/form-data" class="mb-4">
+  <!--<form id="uploadForm" enctype="multipart/form-data" class="mb-4">
   <div class="input-group mb-2">
     <input type="file" name="file" class="form-control" required>
   </div>
@@ -50,7 +50,15 @@
     </select>
   </div>
   <button class="btn btn-primary" type="submit">Upload</button>
-</form>
+</form>-->
+
+<select name="type_id" class="form-select" required>
+  <option value="">Select file type...</option>
+  {% for row in types %}
+    {% set depth = row.type_desc.count('::') %}
+    <option value="{{ row.id }}">{{ "&nbsp;&nbsp;" * depth }}{{ row.type_desc.split("::")[-1] }}</option>
+  {% endfor %}
+</select>
 
 
   <!--<ul id="fileList" class="list-group mb-4"></ul>-->

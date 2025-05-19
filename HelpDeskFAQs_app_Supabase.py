@@ -112,8 +112,7 @@ def view_aplication_page():
 
     return render_template("HelpDeskFAQs_viewer.html", files=content_list)
 
-
-@app.route("/upload", methods=["POST"])
+"""@app.route("/upload", methods=["POST"])
 def upload():
     try:
         file = request.files.get("file")
@@ -148,6 +147,47 @@ def upload():
     except Exception as e:
         print("Upload error:", e)  # <--- this helps!
         return jsonify({"error": f"Upload failed: {str(e)}"}), 500
+"""
+
+@app.route("/upload", methods=["POST"])
+def upload_file():
+    uploaded_file = request.files.get("file")
+    type_id = request.form.get("type_id")
+
+    if not uploaded_file or not type_id:
+        return "Missing file or type", 400
+
+    # Lookup type_desc and convert to folder
+    type_row = next((row for row in TYPE_DATA if row["id"] == type_id), None)
+    if not type_row:
+        return "Invalid type_id", 400
+
+    type_desc = type_row["description"]
+    folder = type_desc.replace("::", "/") + "/"
+
+    filename = secure_filename(uploaded_file.filename)
+    file_bytes = uploaded_file.read()
+
+    # Upload to Supabase Storage
+    supabase.storage.from_("faqfiles").upload(
+        f"{folder}{filename}",
+        file_bytes,
+        {"content-type": uploaded_file.mimetype},
+        upsert=True
+    )
+
+    # Save metadata to database
+    new_file = File(
+        type_id=type_row["id"],
+        type_desc=type_row["description"],
+        filename=filename,
+        filepath=filename
+    )
+    db.session.add(new_file)
+    db.session.commit()
+
+    return jsonify({"message": "File uploaded successfully."}), 200
+
 
 @app.route("/files", methods=["GET"])
 def list_files():
