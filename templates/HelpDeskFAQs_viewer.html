@@ -46,7 +46,6 @@
     <h2>{{ file.filename }}</h2>
     <a href="/download/{{ file.id }}" class="btn btn-sm btn-success mb-3">Download</a>
     <section>
-      <h3> Secção processada </h3>
       {% for paragraph in file.text.split('\n\n') %}
         {% set parts = paragraph.strip().split('.', 1) %}
         {% if parts|length > 1 %}
