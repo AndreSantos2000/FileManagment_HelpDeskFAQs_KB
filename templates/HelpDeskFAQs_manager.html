@@ -30,12 +30,28 @@
 
   <h1 class="mb-4">📂 File Manager</h1>
 
-  <form id="uploadForm" enctype="multipart/form-data" class="mb-4">
+  <!--<form id="uploadForm" enctype="multipart/form-data" class="mb-4">
     <div class="input-group">
       <input type="file" name="file" class="form-control" required>
       <button class="btn btn-primary" type="submit">Upload</button>
     </div>
-  </form>
+  </form>-->
+
+  <form id="uploadForm" enctype="multipart/form-data" class="mb-4">
+  <div class="input-group mb-2">
+    <input type="file" name="file" class="form-control" required>
+  </div>
+  <div class="input-group mb-2">
+    <select name="type_id" class="form-select" required>
+      <option value="">Select file type...</option>
+      {% for row in types %}
+      <option value="{{ row.id }}">{{ row.description }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button class="btn btn-primary" type="submit">Upload</button>
+</form>
+
 
   <!--<ul id="fileList" class="list-group mb-4"></ul>-->
 

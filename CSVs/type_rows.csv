@@ -1,0 +1,91 @@
+id,description,created_at,Master_type_id
+0,Aplicacoes,2025-05-16 14:20:06.55165+00,
+1,Computador,2025-05-16 14:20:40.9652+00,
+2,Dominio,2025-05-16 14:20:54.910085+00,
+3,E-mail,2025-05-16 14:21:15.356895+00,
+4,Equipamentos,2025-05-16 14:22:03.564056+00,
+5,Rede,2025-05-16 14:22:34.82792+00,
+6,Segurança,2025-05-16 14:23:35.752718+00,
+7,Servidor,2025-05-16 14:23:50.865833+00,
+8,Telefones,2025-05-16 14:24:08.579612+00,
+9,Aplicacoes::ACCP_e_ACPE,2025-05-16 14:31:40.85765+00,0
+10,Aplicacoes::ACINGOV_BIZGOV,2025-05-16 14:35:47.001996+00,0
+11,Aplicacoes::AIM - Alienacao de Imoveis Municipais?,2025-05-19 10:22:47.001996+00,0
+12,Aplicacoes::Ascensores?,2025-05-19 10:22:47.001996+00,0
+13,Aplicacoes::CCX?,2025-05-19 10:22:47.001996+00,0
+14,Aplicacoes::CPC/Giaf?,2025-05-19 10:22:47.001996+00,0
+15,Aplicacoes::CRM?,2025-05-19 10:22:47.001996+00,0
+16,Aplicacoes::CUCM?,2025-05-19 10:22:47.001996+00,0
+17,Aplicacoes::Edoc - UrbanismoDigital?,2025-05-19 10:22:47.001996+00,0
+18,Aplicacoes::Encargos Futuros?,2025-05-19 10:22:47.001996+00,0
+19,Aplicacoes::Faxserver?,2025-05-19 10:22:47.001996+00,0
+20,Aplicacoes::Feriados?,2025-05-19 10:22:47.001996+00,0
+21,Aplicacoes::GIF?,2025-05-19 10:22:47.001996+00,0
+22,Aplicacoes::GOPI?,2025-05-19 10:22:47.001996+00,0
+23,Aplicacoes::GescorV2?,2025-05-19 10:22:47.001996+00,0
+24,Aplicacoes::GescorV3?,2025-05-19 10:22:47.001996+00,0
+25,Aplicacoes::GescorV4?,2025-05-19 10:22:47.001996+00,0
+26,Aplicacoes::Geslis?,2025-05-19 10:22:47.001996+00,0
+27,Aplicacoes::GestAUGIs?,2025-05-19 10:22:47.001996+00,0
+28,Aplicacoes::GestOcorre?,2025-05-19 10:22:47.001996+00,0
+29,Aplicacoes::Gest�o da Forma��o?,2025-05-19 10:22:47.001996+00,0
+30,Aplicacoes::Intranet?,2025-05-19 10:22:47.001996+00,0
+31,Aplicacoes::LXI?,2025-05-19 10:22:47.001996+00,0
+32,Aplicacoes::Loja Lisboa?,2025-05-19 10:22:47.001996+00,0
+33,Aplicacoes::Meios e recursos?,2025-05-19 10:22:47.001996+00,0
+34,Aplicacoes::Microsoft365?,2025-05-19 10:22:47.001996+00,0
+35,Aplicacoes::Portal-TI?,2025-05-19 10:22:47.001996+00,0
+36,Aplicacoes::Rede Colaborativa?,2025-05-19 10:22:47.001996+00,0
+37,Aplicacoes::SAP?,2025-05-19 10:22:47.001996+00,0
+38,Aplicacoes::SEF?,2025-05-19 10:22:47.001996+00,0
+39,Aplicacoes::Site CML?,2025-05-19 10:22:47.001996+00,0
+40,Aplicacoes::TMT?,2025-05-19 10:22:47.001996+00,0
+41,Aplicacoes::Taxacao/Easylink?,2025-05-19 10:22:47.001996+00,0
+42,Aplicacoes::Teams?,2025-05-19 10:22:47.001996+00,0
+43,Aplicacoes::TelecomApp?,2025-05-19 10:22:47.001996+00,0
+44,Aplicacoes::VPN?,2025-05-19 10:22:47.001996+00,0
+45,Aplicacoes::ZOOMCallRec?,2025-05-19 10:22:47.001996+00,0
+46,Aplicacoes::e-Despesa?,2025-05-19 10:22:47.001996+00,0
+47,Computador::Anti Virus?,2025-05-19 10:22:47.001996+00,1
+48,Computador::Componentes?,2025-05-19 10:22:47.001996+00,1
+49,Computador::E-mail?,2025-05-19 10:22:47.001996+00,1
+50,Computador::Impressoras?,2025-05-19 10:22:47.001996+00,1
+51,Computador::Impressoras?::Contrato,2025-05-19 10:22:47.001996+00,50
+52,Computador::Programas?,2025-05-19 10:22:47.001996+00,1
+53,Computador::Sistema Operativo?,2025-05-19 10:22:47.001996+00,1
+54,Dominio::Computador?,2025-05-19 10:22:47.001996+00,2
+55,Dominio::Utilizador?,2025-05-19 10:22:47.001996+00,2
+56,Dominio::Utilizador::Alteracao?,2025-05-19 10:22:47.001996+00,55
+57,Dominio::Utilizador::Altera��o de Password?,2025-05-19 10:22:47.001996+00,55
+58,Dominio::Utilizador::Criacao?,2025-05-19 10:22:47.001996+00,55
+59,Dominio::Utilizador::Desbloqueio?,2025-05-19 10:22:47.001996+00,55
+60,Dominio::Utilizador::Eliminacao?,2025-05-19 10:22:47.001996+00,55
+61,Dominio::Utilizador::Grupos?,2025-05-19 10:22:47.001996+00,55
+62,E-mail::Lista Distribuicao?,2025-05-19 10:22:47.001996+00,3
+63,E-mail::Lista Distribuicao::Alteracao?,2025-05-19 10:22:47.001996+00,62
+64,E-mail::Lista Distribuicao::Criacao?,2025-05-19 10:22:47.001996+00,62
+65,E-mail::Lista Distribuicao::Eliminacao?,2025-05-19 10:22:47.001996+00,62
+66,E-mail::Mailbox?,2025-05-19 10:22:47.001996+00,3
+67,E-mail::Mailbox::Alteracao?,2025-05-19 10:22:47.001996+00,66
+68,E-mail::Mailbox::Criacao?,2025-05-19 10:22:47.001996+00,66
+69,E-mail::Mailbox::Eliminacao?,2025-05-19 10:22:47.001996+00,66
+70,E-mail::Mailbox::Permissoes?,2025-05-19 10:22:47.001996+00,66
+71,Equipamentos::Avaria?,2025-05-19 10:22:47.001996+00,4
+72,Equipamentos::Configuracao?,2025-05-19 10:22:47.001996+00,4
+73,Equipamentos::Ligacao?,2025-05-19 10:22:47.001996+00,4
+74,Equipamentos::Sustituicao?,2025-05-19 10:22:47.001996+00,4
+75,Rede::Avaria geral?,2025-05-19 10:22:47.001996+00,5
+76,Rede::Avaria tomada?,2025-05-19 10:22:47.001996+00,5
+77,Rede::Avaria?,2025-05-19 10:22:47.001996+00,5
+78,Rede::Ligacao?,2025-05-19 10:22:47.001996+00,5
+79,Seguran�a::Incidente de Seguran�a?,2025-05-19 10:22:47.001996+00,6
+80,Servidor::Ficheiros?,2025-05-19 10:22:47.001996+00,7
+81,Servidor::Ficheiros::Backups?,2025-05-19 10:22:47.001996+00,80
+82,Servidor::Impressao?,2025-05-19 10:22:47.001996+00,7
+83,Telefones::Alteracao Permissoes?,2025-05-19 10:22:47.001996+00,8
+84,Telefones::Avaria Equipamento?,2025-05-19 10:22:47.001996+00,8
+85,Telefones::Avaria Linha?,2025-05-19 10:22:47.001996+00,8
+86,Telefones::Configuracao?,2025-05-19 10:22:47.001996+00,8
+87,Telefones::Instalacao?,2025-05-19 10:22:47.001996+00,8
+88,Telefones::Ligacao?,2025-05-19 10:22:47.001996+00,8
+89,Telefones::Mudanca?,2025-05-19 10:22:47.001996+00,8

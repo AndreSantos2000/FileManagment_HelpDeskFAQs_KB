@@ -6,6 +6,7 @@ from supabase import create_client, Client
 from werkzeug.utils import secure_filename
 import fitz #PyMuPDF
 #from dotenv import load_dotenv
+import csv
 
 #load_dotenv()
 
@@ -29,6 +30,12 @@ class File(db.Model):
     mime_type = db.Column(db.String(255))
     filepath = db.Column(db.String(300))
 
+
+# Parse CSV into a list of dicts at app start
+TYPE_DATA = []
+with open("type_rows.csv", newline="") as f:
+    reader = csv.DictReader(f)
+    TYPE_DATA = [row for row in reader]
 
 #@app.route("/viewPage")
 @app.route("/")
@@ -66,7 +73,7 @@ def view_page():
 @app.route("/managePage")
 def index():
     files = File.query.all()
-    return render_template("HelpDeskFAQs_manager.html", files=files)
+    return render_template("HelpDeskFAQs_manager.html", files=files, types=TYPE_DATA)
 
 #@app.route("/viewPage")
 #def view_page():
