@@ -33,7 +33,7 @@ class File(db.Model):
 
 # Parse CSV into a list of dicts at app start
 TYPE_DATA = []
-with open("type_rows.csv", newline="") as f:
+with open("CSVs/type_rows.csv", newline="") as f:
     reader = csv.DictReader(f)
     TYPE_DATA = [row for row in reader]
 
