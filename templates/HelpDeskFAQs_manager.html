@@ -55,8 +55,8 @@
 <select name="type_id" class="form-select" required>
   <option value="">Select file type...</option>
   {% for row in types %}
-    {% set depth = row.type_desc.count('::') %}
-    <option value="{{ row.id }}">{{ "&nbsp;&nbsp;" * depth }}{{ row.type_desc.split("::")[-1] }}</option>
+    {% set depth = row.description.count('::') %}
+    <option value="{{ row.id }}">{{ "&nbsp;&nbsp;" * depth }}{{ row.description.split("::")[-1] }}</option>
   {% endfor %}
 </select>
 
