@@ -162,7 +162,7 @@ def upload_file():
     if not type_row:
         return "Invalid type_id", 400
 
-    type_desc = type_row["type_desc"]
+    type_desc = type_row["description"]
     folder = type_desc.replace("::", "/") + "/"
 
     filename = secure_filename(uploaded_file.filename)
