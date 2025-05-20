@@ -35,7 +35,7 @@ class Type(db.Model):
     __tablename__ = 'type'
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.timestamptz(255), nullable=False)
+    #created_at = db.Column(db.timestamptz(255), nullable=False)
     Master_type_id = db.Column(db.String(255), nullable=False)
 
 
