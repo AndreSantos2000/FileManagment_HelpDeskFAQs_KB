@@ -181,7 +181,7 @@ def upload_file():
         f"{folder}{filename}",
         file_bytes,
         {"content-type": uploaded_file.mimetype},
-        upsert=True
+        #upsert=True
     )
 
     # Save metadata to database
