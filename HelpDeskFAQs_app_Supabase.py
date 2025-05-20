@@ -55,6 +55,7 @@ def view_page():
         type_row = next((row for row in TYPE_DATA if row["id"] == file.type_id), None)
         folder_path = type_row["description"].replace("::", "/") if type_row else ""
         storage_path = f"{folder_path}/{file.filename}" if folder_path else file.filename
+        print("storage path: ", storage_path)
         if file.filename:
         #    if not file.filename.lower().endswith(".pdf"):
         #        continue
