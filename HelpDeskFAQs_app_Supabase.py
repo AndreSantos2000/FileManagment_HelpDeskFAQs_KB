@@ -162,26 +162,31 @@ def upload_file():
     uploaded_file = request.files.get("file")
     type_id = request.form.get("type_id")
 
-    if not uploaded_file or not type_id:
-        return "Missing file or type", 400
-
-    # Lookup type_desc and convert to folder
-    type_row = next((row for row in TYPE_DATA if row["id"] == type_id), None)
-    if not type_row:
-        return "Invalid type_id", 400
-
-    type_desc = type_row["description"]
-    folder = type_desc.replace("::", "/") + "/"
+    if not uploaded_file:
+        return "Missing file", 400
 
     filename = secure_filename(uploaded_file.filename)
     file_bytes = uploaded_file.read()
 
+    # Default: no folder
+    folder = ""
+
+    # If type_id is given, map it to folder path
+    if type_id:
+        type_row = next((row for row in TYPE_DATA if str(row["id"]) == str(type_id)), None)
+        if not type_row:
+            return "Invalid type_id", 400
+        type_desc = type_row["description"]
+        folder = type_desc.replace("::", "/").strip("/")  # e.g., E-mail/Mailbox
+
+    # Build final storage path
+    storage_path = f"{folder}/{filename}" if folder else filename
+
     # Upload to Supabase Storage
     supabase.storage.from_("faqfiles").upload(
-        f"{folder}{filename}",
+        storage_path,
         file_bytes,
-        {"content-type": uploaded_file.mimetype},
-        #upsert=True
+        {"content-type": uploaded_file.mimetype}
     )
 
     # Save metadata to database
@@ -218,9 +223,11 @@ def list_files():
 @app.route("/download/<int:file_id>", methods=["GET"])
 def download(file_id):
     file_record = File.query.get_or_404(file_id)
-
+    type_record = Type.query.get_or_404(file_record.type_id) if file_record.type_id else ""
+    folder = type_record.description.replace("::", "/") if type_record.id else ""
+    storage_path = f"{folder}/{file_record.filename}" if folder else file_record.filename
     # Ensure the storage path is correct (e.g., uploads/filename.txt)
-    storage_path = file_record.filepath
+    #storage_path = file_record.filepath
 
     try:
         # Download file content from Supabase Storage

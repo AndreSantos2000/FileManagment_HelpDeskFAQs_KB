@@ -59,14 +59,14 @@
   </div>
   <div class="input-group mb-2">
     <select name="type_id" class="form-select" required>
-      <option value="">Select file type...</option>
+      <option value="">Select file type ...</option>
       {% for row in types %}
         <!--{% set depth = row.description.count('::') %}
         <option value="{{ row.id }}">{{ "&nbsp;&nbsp;" * depth }}{{ row.description.split("::")[-1] }}</option>-->
         {% set parts = row.description.split("::") %}
         <option value="{{ row.id }}">{{ ' > '.join(parts) }}</option>
       {% endfor %}
-</select>
+    </select>
   </div>
   <button class="btn btn-primary" type="submit">Upload</button>
 </form>
