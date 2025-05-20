@@ -21,6 +21,7 @@ SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET")
 
 
 class File(db.Model):
+    __tablename__ = 'file'
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255))
     type_id = db.Column(db.Integer)
@@ -29,6 +30,13 @@ class File(db.Model):
     master_type_desc = db.Column(db.String(255))
     mime_type = db.Column(db.String(255))
     filepath = db.Column(db.String(300))
+
+class Type(db.Model):
+    __tablename__ = 'type'
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.timestamptz(255), nullable=False)
+    Master_type_id = db.Column(db.String(255), nullable=False)
 
 
 # Parse CSV into a list of dicts at app start
@@ -192,7 +200,20 @@ def upload_file():
 @app.route("/files", methods=["GET"])
 def list_files():
     files = File.query.all()
-    return jsonify([{"id": f.id, "filename": f.filename, "type_desc": f.type_desc, "master_type_desc": f.master_type_desc} for f in files])
+    #return jsonify([{"id": f.id, "filename": f.filename, "type_desc": f.type_desc, "master_type_desc": f.master_type_desc} for f in files])
+    result = []
+    for f in files:
+        type_entry = Type.query.get(f.type_id)
+        master_entry = Type.query.get(type_entry.Master_type_id) if type_entry.Master_type_id else ""
+        result.append({
+            "id": f.id,
+            "filename": f.filename,
+            "type_id": f.type_id,
+            "type_desc": type_entry.description if type_entry else "",
+            "master_type_desc": master_entry.description if master_entry else ""
+        })
+    return jsonify(result)
+
 
 @app.route("/download/<int:file_id>", methods=["GET"])
 def download(file_id):
