@@ -51,16 +51,16 @@ def view_page():
     files = File.query.all()
     content_list = []
     for file in files:
-        type_row = next((row for row in TYPE_DATA if row["id"] == file.type_id), None)
-        folder = type_row.description.replace("::", "/")
-        storage_path = f"{folder}/{file.filename}" if folder else file.filename
+        #type_row = next((row for row in TYPE_DATA if row["id"] == file.type_id), None)
+        #folder = type_row.description.replace("::", "/") if type_row else ""
+        #storage_path = f"{folder}/{file.filename}" if folder else file.filename
         if file.filename:
         #    if not file.filename.lower().endswith(".pdf"):
         #        continue
             try:
                 # Download file from Supabase bucket
-                #response = supabase.storage.from_("faqfiles").download(file.filepath)
-                response = supabase.storage.from_("faqfiles").download(storage_path)
+                response = supabase.storage.from_("faqfiles").download(file.filepath)
+                #response = supabase.storage.from_("faqfiles").download(storage_path)
                 pdf_bytes = response  # This is bytes
 
                 # Use PyMuPDF to extract text
