@@ -51,16 +51,20 @@ def view_page():
     files = File.query.all()
     content_list = []
     for file in files:
+        type_record = Type.query.get_or_404(file.type_id) if file.type_id else ""
+        folder = type_record.description.replace("::", "/") if type_record else ""
+        storage_path = f"{folder}/{file.filename}" if folder else file.filename
         #type_row = next((row for row in TYPE_DATA if row["id"] == file.type_id), None)
-        #folder = type_row.description.replace("::", "/") if type_row else ""
-        #storage_path = f"{folder}/{file.filename}" if folder else file.filename
+        #folder_path = type_row["description"].replace("::", "/") if type_row else ""
+        #storage_path = f"{folder_path}/{file.filename}" if folder_path else file.filename
+        #print("storage path: ", storage_path)
         if file.filename:
         #    if not file.filename.lower().endswith(".pdf"):
         #        continue
             try:
                 # Download file from Supabase bucket
-                response = supabase.storage.from_("faqfiles").download(file.filepath)
-                #response = supabase.storage.from_("faqfiles").download(storage_path)
+                #response = supabase.storage.from_("faqfiles").download(file.filepath)
+                response = supabase.storage.from_("faqfiles").download(storage_path)
                 pdf_bytes = response  # This is bytes
 
                 # Use PyMuPDF to extract text
@@ -91,6 +95,37 @@ def index():
 #    files = File.query.all()
 #    return render_template("HelpDeskFAQs_viewer.html", files=files)
 
+@app.route("/")
+def view_aplication_page():
+    files = File.query.all()
+    content_list = []
+
+    for file in files:
+        if not file.filename.lower().endswith(".pdf"):
+            continue
+        
+        try:
+            # Download file from Supabase bucket
+            response = supabase.storage.from_("faqfiles/Aplicacoes").download(file.filepath)
+            pdf_bytes = response  # This is bytes
+
+            # Use PyMuPDF to extract text
+            doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+            text = "\n".join([page.get_text() for page in doc])
+            doc.close()
+
+            content_list.append({
+                "id": file.id,
+                "filename": file.filename,
+                "text": text
+            })
+        except Exception as e:
+            content_list.append({
+                "filename": file.filename,
+                "text": f"Error loading file: {str(e)}"
+            })
+
+    return render_template("HelpDeskFAQs_viewer.html", files=content_list)
 
 """@app.route("/upload", methods=["POST"])
 def upload():
@@ -149,9 +184,9 @@ def upload_file():
         if not type_row:
             return "Invalid type_id", 400
         type_desc = type_row["description"]
-        folder = type_desc.replace("::", "/")#.strip("/")  # e.g., E-mail/Mailbox
+        folder = type_desc.replace("::", "/").strip("/")  # e.g., E-mail/Mailbox
 
-    # Build final storage path fixed
+    # Build final storage path
     storage_path = f"{folder}/{filename}" if folder else filename
 
     # Upload to Supabase Storage
