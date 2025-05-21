@@ -61,8 +61,6 @@
     <select name="type_id" class="form-select" required>
       <option value="">Select file type ...</option>
       {% for row in types %}
-        <!--{% set depth = row.description.count('::') %}
-        <option value="{{ row.id }}">{{ "&nbsp;&nbsp;" * depth }}{{ row.description.split("::")[-1] }}</option>-->
         {% set parts = row.description.split("::") %}
         <option value="{{ row.id }}">{{ ' > '.join(parts) }}</option>
       {% endfor %}
@@ -113,25 +111,13 @@
       form.reset();
       loadFiles();
     });
+
+    
     async function loadFiles() {
       const res = await fetch("/files");
       const files = await res.json();
       fileList.innerHTML = "";
 
-      /*files.forEach(file => {
-        const isTxt = file.filename.toLowerCase().endsWith(".txt");
-        const item = document.createElement("li");
-        item.className = "list-group-item d-flex justify-content-between align-items-center";
-        item.innerHTML = `
-          ${file.filename}
-          <span>
-            <a href="/download/${file.id}" class="btn btn-sm btn-success">Download</a>
-            ${isTxt ? `<button onclick="viewText(${file.id})" class="btn btn-sm btn-info">View</button>` : ""}
-            <button onclick="deleteFile(${file.id})" class="btn btn-sm btn-danger">Delete</button>
-          </span>
-        `;
-        fileList.appendChild(item);
-      });*/
       files.forEach(file => {
         if (file.filename){
           const isTxt = file.filename.toLowerCase().endsWith(".txt");
