@@ -186,7 +186,7 @@ def upload_file():
         type_desc = type_row["description"]
         folder = type_desc.replace("::", "/")#.strip("/")  # e.g., E-mail/Mailbox
 
-    # Build final storage path
+    # Build final storage path fixed
     storage_path = f"{folder}/{filename}" if folder else filename
 
     # Upload to Supabase Storage
