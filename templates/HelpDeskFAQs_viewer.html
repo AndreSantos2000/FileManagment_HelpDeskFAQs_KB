@@ -44,6 +44,7 @@
   {% for file in files %}
   <article>
     <h2>{{ file.filename }}</h2>
+    <h2>{{ file.id }}</h2>
     <a href="/download/{{ file.id }}" class="btn btn-sm btn-success mb-3">Download</a>
     <section>
       {% for paragraph in file.text.split('\n\n') %}
