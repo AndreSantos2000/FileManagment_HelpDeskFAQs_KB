@@ -263,10 +263,13 @@ def view(file_id):
 
 @app.route("/delete/<int:file_id>", methods=["DELETE"])
 def delete(file_id):
-    file = File.query.get(file_id)
-    if file:
-        supabase.storage.from_(SUPABASE_BUCKET).remove([file.filename])
-        db.session.delete(file)
+    file_record = File.query.get_or_404(file_id)
+    type_record = Type.query.get_or_404(file_record.type_id) if file_record.type_id else ""
+    folder = type_record.description.replace("::", "/") if type_record.id else ""
+    storage_path = f"{folder}/{file_record.filename}" if folder else file_record.filename
+    if storage_path:
+        supabase.storage.from_(SUPABASE_BUCKET).remove([storage_path])
+        db.session.delete(file_record)
         db.session.commit()
     return jsonify({"message": f"File {file_id} deleted successfully."}), 200
 
