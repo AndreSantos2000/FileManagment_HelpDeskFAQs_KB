@@ -52,7 +52,7 @@ def view_page():
     content_list = []
     for file in files:
         type_record = Type.query.get_or_404(file.type_id) if file.type_id else ""
-        folder = type_record.description.replace("::", "/") if type_record.id else ""
+        folder = type_record.description.replace("::", "/") if type_record else ""
         storage_path = f"{folder}/{file.filename}" if folder else file.filename
         #type_row = next((row for row in TYPE_DATA if row["id"] == file.type_id), None)
         #folder_path = type_row["description"].replace("::", "/") if type_row else ""
