@@ -120,8 +120,7 @@ def index():
 #                "filename": file.filename,
 #                "text": f"Error loading file: {str(e)}"
 #            })
-#
-#     return render_template("HelpDeskFAQs_viewer.html", files=content_list)
+#    return render_template("HelpDeskFAQs_viewer.html", files=content_list)
 
 """@app.route("/upload", methods=["POST"])
 def upload():
@@ -211,15 +210,13 @@ def list_files():
     #return jsonify([{"id": f.id, "filename": f.filename, "type_desc": f.type_desc, "master_type_desc": f.master_type_desc} for f in files])
     result = []
     for f in files:
-        type_row = next((row for row in TYPE_DATA if row["id"] == f.type_id), None)
         type_entry = Type.query.get(f.type_id)
         master_entry = Type.query.get(type_entry.Master_type_id) if type_entry.Master_type_id else ""
         result.append({
             "id": f.id,
             "filename": f.filename,
             "type_id": f.type_id,
-            #"type_desc": type_entry.description if type_entry else "",
-            "type_desc": type_row.description if type_entry else "",
+            "type_desc": type_entry.description if type_entry else "",
             "master_type_desc": master_entry.description if master_entry else ""
         })
     return jsonify(result)
