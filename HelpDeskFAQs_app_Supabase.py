@@ -65,7 +65,7 @@ def view_page():
                 # Download file from Supabase bucket
                 #response = supabase.storage.from_("faqfiles").download(file.filepath)
                 response = supabase.storage.from_("faqfiles").download(storage_path)
-                pdf_bytes = response.read()  # This is bytes
+                pdf_bytes = response  # This is bytes
 
                 # Use PyMuPDF to extract text
                 doc = fitz.open(stream=pdf_bytes, filetype="pdf")
