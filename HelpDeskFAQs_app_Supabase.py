@@ -52,7 +52,7 @@ def view_page():
     content_list = []
     for file in files:
         type_row = next((row for row in TYPE_DATA if row["id"] == file.type_id), None)
-        folder = type_row.description.replace("::", "/") if type_row else ""
+        folder = type_row.description.replace("::", "/")
         storage_path = f"{folder}/{file.filename}" if folder else file.filename
         if file.filename:
         #    if not file.filename.lower().endswith(".pdf"):
