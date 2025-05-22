@@ -148,7 +148,7 @@ def upload_file():
         if not type_row:
             return "Invalid type_id", 400
         type_desc = type_row["description"]
-        folder = type_desc.replace("::", "/").strip("/")  # e.g., E-mail/Mailbox
+        folder = type_desc.replace("::", "/")#.strip("/")  # e.g., E-mail/Mailbox
 
     # Build final storage path
     storage_path = f"{folder}/{filename}" if folder else filename
@@ -229,7 +229,7 @@ def view(file_id):
 def delete(file_id):
     file_record = File.query.get_or_404(file_id)
     type_record = Type.query.get_or_404(file_record.type_id) if file_record.type_id else ""
-    folder = type_record.description.replace("::", "/") + "/" if type_record.description else ""
+    folder = type_record.description.replace("::", "/") if type_record.description else ""
     ######
     storage_path = f"{folder}/{file_record.filename}" if folder else file_record.filename
     if storage_path:
