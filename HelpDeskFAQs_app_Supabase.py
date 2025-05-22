@@ -53,6 +53,7 @@ def view_page():
     for file in files:
         type_record = Type.query.get_or_404(file.type_id) if file.type_id else ""
         folder = type_record.description.replace("::", "/") if type_record else ""
+        folder = folder.strip("?")
         storage_path = f"{folder}/{file.filename}" if folder else file.filename
         #type_row = next((row for row in TYPE_DATA if row["id"] == file.type_id), None)
         #folder_path = type_row["description"].replace("::", "/") if type_row else ""
@@ -196,6 +197,7 @@ def download(file_id):
     file_record = File.query.get_or_404(file_id)
     type_record = Type.query.get_or_404(file_record.type_id) if file_record.type_id else ""
     folder = type_record.description.replace("::", "/") if type_record.id else ""
+    folder = folder.strip("?")
     storage_path = f"{folder}/{file_record.filename}" if folder else file_record.filename
     # Ensure the storage path is correct (e.g., uploads/filename.txt)
     #storage_path = file_record.filepath
@@ -230,6 +232,7 @@ def delete(file_id):
     file_record = File.query.get_or_404(file_id)
     type_record = Type.query.get_or_404(file_record.type_id) if file_record.type_id else ""
     folder = type_record.description.replace("::", "/") if type_record.description else ""
+    folder = folder.strip("?")
     ######
     storage_path = f"{folder}/{file_record.filename}" if folder else file_record.filename
     if storage_path:
