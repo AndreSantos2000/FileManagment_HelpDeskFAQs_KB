@@ -127,42 +127,6 @@ def view_aplication_page():
 
     return render_template("HelpDeskFAQs_viewer.html", files=content_list)
 
-"""@app.route("/upload", methods=["POST"])
-def upload():
-    try:
-        file = request.files.get("file")
-        if not file:
-            return jsonify({"error": "No file provided"}), 400
-
-        filename = secure_filename(file.filename)
-        #storage_path = f"uploads/{filename}"
-
-        file_data = file.read()
-        if len(file_data) == 0:
-            return jsonify({"error": "Uploaded file is empty"}), 400
-
-        # Upload to Supabase Storage
-        res = supabase.storage.from_(SUPABASE_BUCKET).upload(
-            filename, file_data, {"content-type": file.content_type}
-        )
-        print("Supabase upload response:", res)
-
-        # Save metadata to database
-        new_file = File(
-            type_id=0,
-            type_desc="Aplicações",
-            filename=filename,
-            filepath=filename
-        )
-        db.session.add(new_file)
-        db.session.commit()
-
-        return jsonify({"message": "File uploaded successfully."}), 200
-
-    except Exception as e:
-        print("Upload error:", e)  # <--- this helps!
-        return jsonify({"error": f"Upload failed: {str(e)}"}), 500
-"""
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
@@ -265,7 +229,7 @@ def view(file_id):
 def delete(file_id):
     file_record = File.query.get_or_404(file_id)
     type_record = Type.query.get_or_404(file_record.type_id) if file_record.type_id else ""
-    folder = type_record.description.replace("::", "/") if type_record.id else ""
+    folder = type_record.description.replace("::", "/") if type_record.description else ""
     storage_path = f"{folder}/{file_record.filename}" if folder else file_record.filename
     if storage_path:
         supabase.storage.from_(SUPABASE_BUCKET).remove([storage_path])
