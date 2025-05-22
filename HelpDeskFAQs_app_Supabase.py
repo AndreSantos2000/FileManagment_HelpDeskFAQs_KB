@@ -229,7 +229,8 @@ def view(file_id):
 def delete(file_id):
     file_record = File.query.get_or_404(file_id)
     type_record = Type.query.get_or_404(file_record.type_id) if file_record.type_id else ""
-    folder = type_record.description.replace("::", "/") if type_record.description else ""
+    folder = type_record.description.replace("::", "/") + "/" if type_record.description else ""
+    ######
     storage_path = f"{folder}/{file_record.filename}" if folder else file_record.filename
     if storage_path:
         supabase.storage.from_(SUPABASE_BUCKET).remove([storage_path])
