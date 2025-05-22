@@ -148,11 +148,11 @@ def upload_file():
         if not type_row:
             return "Invalid type_id", 400
         type_desc = type_row["description"]
-        folder = type_desc.replace("::", "/")#.strip("/")  # e.g., E-mail/Mailbox
+        folder = type_desc.replace("::", "/") + "/"#.strip("/")  # e.g., E-mail/Mailbox
 
     # Build final storage path
-    storage_path = f"{folder}/{filename}" if folder else filename
-
+    #storage_path = f"{folder}/{filename}" if folder else filename
+    storage_path = folder + "/" + filename if folder else filename
     # Upload to Supabase Storage
     supabase.storage.from_("faqfiles").upload(
         storage_path,
