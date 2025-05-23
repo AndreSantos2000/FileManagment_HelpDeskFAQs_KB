@@ -18,17 +18,17 @@
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
             <!--<a class="nav-link" href="/viewPage">View Files</a>-->
-            <a class="nav-link" href="/">View Files</a>
+            <a class="nav-link" href="/">Ver conteudos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/managePage">Manage Files</a>
+            <a class="nav-link" href="/managePage">Gerir Ficheiros</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <h1 class="mb-4">📂 File Manager</h1>
+  <h1 class="mb-4">📂 Gestor de Ficheiros</h1>
 
   <!--<form id="uploadForm" enctype="multipart/form-data" class="mb-4">
     <div class="input-group">
@@ -59,7 +59,7 @@
   </div>
   <div class="input-group mb-2">
     <select name="type_id" class="form-select" required>
-      <option value="">Select file type ...</option>
+      <option value="">Selecione o tema do ficheiro ...</option>
       {% for row in types %}
         {% set parts = row.description.split("::") %}
         <option value="{{ row.id }}">{{ ' > '.join(parts) }}</option>
