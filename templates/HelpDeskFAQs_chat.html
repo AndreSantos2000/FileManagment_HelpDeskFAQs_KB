@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Chat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    #chat-box {
+      max-height: 70vh;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+    }
+    .user-msg { font-weight: bold; }
+    .ai-msg { color: #2c3e50; }
+  </style>
+</head>
+<body class="p-4">
+  <div class="container">
+    <h2 class="mb-4">💬 Chat with AI</h2>
+
+    <div id="chat-box" class="mb-3"></div>
+
+    <form id="chat-form">
+      <div class="input-group">
+        <input type="text" id="question-input" class="form-control" placeholder="Type your question..." required>
+        <button class="btn btn-primary" type="submit">Send</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const chatForm = document.getElementById("chat-form");
+    const chatBox = document.getElementById("chat-box");
+    const input = document.getElementById("question-input");
+
+    chatForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const question = input.value.trim();
+      if (!question) return;
+
+      appendMessage("You", question, "user-msg");
+      input.value = "";
+
+      const res = await fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question })
+      });
+
+      const data = await res.json();
+      if (data.answer) {
+        appendMessage("AI", data.answer, "ai-msg");
+      } else {
+        appendMessage("AI", "Error: " + (data.error || "No response"), "ai-msg");
+      }
+    });
+
+    function appendMessage(sender, text, className) {
+      const msg = document.createElement("div");
+      msg.innerHTML = `<strong>${sender}:</strong> <span class="${className}">${text}</span>`;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>

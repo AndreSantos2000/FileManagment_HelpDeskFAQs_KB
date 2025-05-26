@@ -20,5 +20,5 @@ def get_embedding(text, model="granite-3.1-8b-instruct"):
    return client.embeddings.create(model=model, input = [text], encoding_format="float").data[0].embedding
 
 
-AI_interaction("answer in verse")
+#AI_interaction("answer in verse")
 #print(get_embedding("Once upon a time, there was an angel..."))

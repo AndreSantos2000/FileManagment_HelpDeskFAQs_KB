@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 import fitz #PyMuPDF
 #from dotenv import load_dotenv
 import csv
+from llm_utils import AI_interaction  # import your helper
 
 #load_dotenv()
 
@@ -90,6 +91,10 @@ def view_page():
 def index():
     files = File.query.all()
     return render_template("HelpDeskFAQs_manager.html", files=files, types=TYPE_DATA)
+
+@app.route("/chat")
+def chat():
+    return render_template("HelpDeskFAQs_chat.html")
 
 #@app.route("/viewPage")
 #def view_page():
@@ -240,6 +245,22 @@ def delete(file_id):
         db.session.delete(file_record)
         db.session.commit()
     return jsonify({"message": f"File {file_id} deleted successfully."}), 200
+
+
+@app.route("/ask", methods=["POST"])
+def ask_ai():
+    data = request.json
+    question = data.get("question", "")
+    system_prompt = data.get("system_prompt", "Answer in prose")
+
+    if not question:
+        return jsonify({"error": "Missing question"}), 400
+
+    try:
+        response = AI_interaction(user_content=question, sys_content=system_prompt)
+        return jsonify({"answer": response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":
