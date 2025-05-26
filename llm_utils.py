@@ -21,4 +21,4 @@ def get_embedding(text, model="granite-3.1-8b-instruct"):
 
 
 #AI_interaction("answer in verse")
-#print(get_embedding("Once upon a time, there was an angel..."))
+#print(get_embedding("Once upon a time, ..."))

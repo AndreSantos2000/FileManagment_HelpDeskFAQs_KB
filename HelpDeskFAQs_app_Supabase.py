@@ -8,7 +8,7 @@ import fitz #PyMuPDF
 #from dotenv import load_dotenv
 import csv
 from llm_utils import AI_interaction  # import your helper
-
+from openai import OpenAI
 #load_dotenv()
 
 app = Flask(__name__)
@@ -20,6 +20,8 @@ db = SQLAlchemy(app)
 supabase: Client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET")
 
+#OpenAi init
+client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
 
 class File(db.Model):
     __tablename__ = 'file'
@@ -248,17 +250,20 @@ def delete(file_id):
 
 
 @app.route("/ask", methods=["POST"])
-def ask_ai():
-    data = request.json
-    question = data.get("question", "")
-    system_prompt = data.get("system_prompt", "Answer in prose")
-
-    if not question:
-        return jsonify({"error": "Missing question"}), 400
-
+def ask():
     try:
-        response = AI_interaction(user_content=question, sys_content=system_prompt)
-        return jsonify({"answer": response})
+        data = request.get_json()
+        user_question = data.get("question", "")
+
+        response = client.chat.completions.create(
+            model="granite-3.1-8b-instruct",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": user_question}
+            ]
+        )
+
+        return jsonify({"answer": response.choices[0].message.content})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
