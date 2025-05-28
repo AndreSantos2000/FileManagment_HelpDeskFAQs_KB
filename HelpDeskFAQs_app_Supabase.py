@@ -270,7 +270,6 @@ def ask():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 def download_and_extract(file_path):
     response = supabase.storage.from_("faqfiles").download(file_path)
     if response is None:
@@ -283,75 +282,28 @@ def download_and_extract(file_path):
     text = "\n".join([page.get_text() for page in doc])
     return text
 
-def split_into_chunks(text, chunk_size=500, overlap=50):
-    words = text.split()
-    chunks = []
-    for i in range(0, len(words), chunk_size - overlap):
-        chunk = " ".join(words[i:i + chunk_size])
-        chunks.append(chunk)
-    return chunks
+#VECTOR_STORE = build_vector_store()
 
-def get_embedding(text, model="granite-3.1-8b-instruct"):
-    text = text.replace("\n", " ")
-    response = client.embeddings.create(
-        model=model,
-        input=[text],
-        encoding_format="float"
-    )
-    return response.data[0].embedding
-
-def build_vector_store():
-    all_vectors = []
-    all_files = File.query.all()
-    for file in all_files:  # list of (file_path, filename)
-        text = download_and_extract(file[0])
-        chunks = split_into_chunks(text)
-        for chunk in chunks:
-            embedding = get_embedding(chunk)
-            all_vectors.append({
-                "embedding": embedding,
-                "text": chunk,
-                "source": file[1]
-            })
-    return all_vectors
-
-###### Search logic ######
-def cosine_similarity(a, b):
-    a, b = np.array(a), np.array(b)
-    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
-
-def search_similar(query, vector_store, top_k=3):
-    query_vector = get_embedding(query)
-    scored = [(cosine_similarity(query_vector, item["embedding"]), item) for item in vector_store]
-    scored = sorted(scored, key=lambda x: x[0], reverse=True)
-    return [s[1] for s in scored[:top_k]]
-
-VECTOR_STORE = build_vector_store()
-
-@app.route("/chatGPA", methods=["GET", "POST"])
-def chat2():
-    if request.method == "POST":
-        query = request.json.get("query")
-        if not query:
-            return jsonify({"error": "Missing query"}), 400
-
-        # Find most relevant chunks
-        results = search_similar(query, VECTOR_STORE)
-        context = "\n\n---\n\n".join([r["text"] for r in results])
-        prompt = [
-            {"role": "system", "content": "Use the provided context to answer clearly."},
-            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
-        ]
-
-        # LLM Completion
-        completion = client.chat.completions.create(
-            model="granite-3.1-8b-instruct",
-            messages=prompt,
-            temperature=0.7
-        )
-        return jsonify({"response": completion.choices[0].message.content})
-    
+@app.route("/chatRAG", methods=["GET"])
+def chat_page():
     return render_template("chat.html")
+
+@app.route("/chatRAG", methods=["POST"])
+def chatRAG():
+    from rag_pipeline import build_vector_store, query_rag
+
+    question = request.json.get("question")
+    filepaths = request.json.get("filepaths")  # Expect list of local file paths
+    #filepaths = File.query.all()
+
+    if not question or not filepaths:
+        return jsonify({"error": "Missing question or filepaths"}), 400
+
+    with app.app_context():
+        vector_store = build_vector_store(filepaths)
+        answer = query_rag(question, vector_store)
+
+    return jsonify({"answer": answer})
 
 ######### main function for running the app #############
 if __name__ == "__main__":

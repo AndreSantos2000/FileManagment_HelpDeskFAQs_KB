@@ -31,25 +31,31 @@
   <div class="container">
     <h2 class="mb-4">Ask a Question (RAG-Powered)</h2>
     <form id="chatForm">
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" id="queryInput" placeholder="Ask your question..." required />
-        <button type="submit" class="btn btn-primary">Ask</button>
-      </div>
-    </form>
-    <div id="responseArea" class="mt-4 border p-3 bg-light"></div>
+      <div class="mb-3">
+      <textarea id="question" class="form-control" rows="3" placeholder="Ask something..."></textarea>
+    </div>
+    <button id="askBtn" class="btn btn-primary">Ask</button>
+
+    <div id="response" class="mt-4 alert alert-info" style="display: none;"></div>
   </div>
 
   <script>
-    document.getElementById("chatForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const query = document.getElementById("queryInput").value;
+    document.getElementById("askBtn").addEventListener("click", async () => {
+      const question = document.getElementById("question").value;
+      const responseBox = document.getElementById("responseArea");
+
       const res = await fetch("/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          question: question,
+          filepaths: ["path/to/local/file.pdf"]  // Replace with real file paths
+        })
       });
+
       const data = await res.json();
-      document.getElementById("responseArea").innerText = data.response || data.error;
+      responseBox.textContent = data.answer || data.error;
+      responseBox.style.display = "block";
     });
   </script>
 </body>
