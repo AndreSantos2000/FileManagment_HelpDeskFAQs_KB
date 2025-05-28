@@ -10,6 +10,7 @@ import csv
 from llm_utils import AI_interaction  # import your helper
 from openai import OpenAI
 #load_dotenv()
+import numpy as np
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
@@ -23,7 +24,7 @@ SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET")
 #OpenAi init
 #client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
 #client = OpenAI(base_url="http://10.14.208.198:1234", api_key="lm-studio")
-client = OpenAI(base_url="https://6dfa-213-30-68-70.ngrok-free.app/v1", api_key="lm-studio")
+client = OpenAI(base_url="https://5125-213-30-68-70.ngrok-free.app", api_key="lm-studio")
 
 class File(db.Model):
     __tablename__ = 'file'
@@ -250,7 +251,7 @@ def delete(file_id):
         db.session.commit()
     return jsonify({"message": f"File {file_id} deleted successfully."}), 200
 
-
+#################### AI integration #######################
 @app.route("/ask", methods=["POST"])
 def ask():
     try:
@@ -270,6 +271,89 @@ def ask():
         return jsonify({"error": str(e)}), 500
 
 
+def download_and_extract(file_path):
+    response = supabase.storage.from_("faqfiles").download(file_path)
+    if response is None:
+        return ""
+
+    with open("/tmp/temp.pdf", "wb") as f:
+        f.write(response)
+
+    doc = fitz.open("/tmp/temp.pdf")
+    text = "\n".join([page.get_text() for page in doc])
+    return text
+
+def split_into_chunks(text, chunk_size=500, overlap=50):
+    words = text.split()
+    chunks = []
+    for i in range(0, len(words), chunk_size - overlap):
+        chunk = " ".join(words[i:i + chunk_size])
+        chunks.append(chunk)
+    return chunks
+
+def get_embedding(text, model="granite-3.1-8b-instruct"):
+    text = text.replace("\n", " ")
+    response = client.embeddings.create(
+        model=model,
+        input=[text],
+        encoding_format="float"
+    )
+    return response.data[0].embedding
+
+def build_vector_store():
+    all_vectors = []
+    all_files = File.query.all()
+    for file in all_files:  # list of (file_path, filename)
+        text = download_and_extract(file[0])
+        chunks = split_into_chunks(text)
+        for chunk in chunks:
+            embedding = get_embedding(chunk)
+            all_vectors.append({
+                "embedding": embedding,
+                "text": chunk,
+                "source": file[1]
+            })
+    return all_vectors
+
+###### Search logic ######
+def cosine_similarity(a, b):
+    a, b = np.array(a), np.array(b)
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+def search_similar(query, vector_store, top_k=3):
+    query_vector = get_embedding(query)
+    scored = [(cosine_similarity(query_vector, item["embedding"]), item) for item in vector_store]
+    scored = sorted(scored, key=lambda x: x[0], reverse=True)
+    return [s[1] for s in scored[:top_k]]
+
+VECTOR_STORE = build_vector_store()
+
+@app.route("/chatGPA", methods=["GET", "POST"])
+def chat2():
+    if request.method == "POST":
+        query = request.json.get("query")
+        if not query:
+            return jsonify({"error": "Missing query"}), 400
+
+        # Find most relevant chunks
+        results = search_similar(query, VECTOR_STORE)
+        context = "\n\n---\n\n".join([r["text"] for r in results])
+        prompt = [
+            {"role": "system", "content": "Use the provided context to answer clearly."},
+            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
+        ]
+
+        # LLM Completion
+        completion = client.chat.completions.create(
+            model="granite-3.1-8b-instruct",
+            messages=prompt,
+            temperature=0.7
+        )
+        return jsonify({"response": completion.choices[0].message.content})
+    
+    return render_template("chat.html")
+
+######### main function for running the app #############
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
