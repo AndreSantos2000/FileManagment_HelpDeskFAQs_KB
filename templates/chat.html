@@ -44,12 +44,12 @@
       const question = document.getElementById("question").value;
       const responseBox = document.getElementById("responseArea");
 
-      const res = await fetch("/chat", {
+      const res = await fetch("/chatRAG", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
           question: question,
-          filepaths: ["path/to/local/file.pdf"]  // Replace with real file paths
+          /*filepaths: ["path/to/local/file.pdf"]  // Replace with real file paths*/
         })
       });
 
