@@ -10,7 +10,7 @@ import csv
 from llm_utils import AI_interaction  # import your helper
 from openai import OpenAI
 #load_dotenv()
-import numpy as np
+from rag_pipeline import build_vector_store, query_rag
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
@@ -24,7 +24,7 @@ SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET")
 #OpenAi init
 #client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
 #client = OpenAI(base_url="http://10.14.208.198:1234", api_key="lm-studio")
-client = OpenAI(base_url="https://5125-213-30-68-70.ngrok-free.app/v1", api_key="lm-studio")
+client = OpenAI(base_url="https://deda-213-30-68-70.ngrok-free.app/v1", api_key="lm-studio")
 
 class File(db.Model):
     __tablename__ = 'file'
@@ -290,11 +290,10 @@ def chat_page():
 
 @app.route("/chatRAG", methods=["POST"])
 def chatRAG():
-    from rag_pipeline import build_vector_store, query_rag
 
     question = request.json.get("question")
     filepaths = request.json.get("filepaths")  # Expect list of local file paths
-    #filepaths = File.query.all()
+    files = File.query.all()
 
     if not question or not filepaths:
         return jsonify({"error": "Missing question or filepaths"}), 400
