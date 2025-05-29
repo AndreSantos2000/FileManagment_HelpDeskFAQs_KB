@@ -29,14 +29,16 @@
 </nav>
 
   <div class="container">
-    <h2 class="mb-4">Ask a Question (RAG-Powered)</h2>
-    <form id="chatForm">
-      <div class="mb-3">
-      <textarea id="question" class="form-control" rows="3" placeholder="Ask something..."></textarea>
-    </div>
-    <button id="askBtn" class="btn btn-primary">Ask</button>
+    <h2 class="mb-4">Pegunte a AI</h2>
 
-    <div id="response" class="mt-4 alert alert-info" style="display: none;"></div>
+    <div id="chat-box" class="mb-3"></div>
+
+    <form id="chat-form">
+      <div class="input-group">
+        <input type="text" id="question" class="form-control" placeholder="escreva a sua questão..." required>
+        <button id="askBtn" class="btn btn-primary" type="submit">Perguntar</button>
+      </div>
+    </form>
   </div>
 
   <script>
