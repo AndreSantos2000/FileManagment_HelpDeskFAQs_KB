@@ -105,37 +105,37 @@ def chat():
 #    files = File.query.all()
 #    return render_template("HelpDeskFAQs_viewer.html", files=files)
 
-@app.route("/")
-def view_aplication_page():
-    files = File.query.all()
-    content_list = []
-
-    for file in files:
-        if not file.filename.lower().endswith(".pdf"):
-            continue
-        
-        try:
-            # Download file from Supabase bucket
-            response = supabase.storage.from_("faqfiles/Aplicacoes").download(file.filepath)
-            pdf_bytes = response  # This is bytes
-
-            # Use PyMuPDF to extract text
-            doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-            text = "\n".join([page.get_text() for page in doc])
-            doc.close()
-
-            content_list.append({
-                "id": file.id,
-                "filename": file.filename,
-                "text": text
-            })
-        except Exception as e:
-            content_list.append({
-                "filename": file.filename,
-                "text": f"Error loading file: {str(e)}"
-            })
-
-    return render_template("HelpDeskFAQs_viewer.html", files=content_list)
+#@app.route("/")
+#def view_aplication_page():
+#    files = File.query.all()
+#    content_list = []
+#
+#    for file in files:
+#        if not file.filename.lower().endswith(".pdf"):
+#            continue
+#        
+#        try:
+#            # Download file from Supabase bucket
+#            response = supabase.storage.from_("faqfiles/Aplicacoes").download(file.filepath)
+#            pdf_bytes = response  # This is bytes
+#
+#           # Use PyMuPDF to extract text
+#          doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+#            text = "\n".join([page.get_text() for page in doc])
+#            doc.close()
+#
+#            content_list.append({
+#                "id": file.id,
+#                "filename": file.filename,
+#                "text": text
+#            })
+#        except Exception as e:
+#            content_list.append({
+#                "filename": file.filename,
+#                "text": f"Error loading file: {str(e)}"
+#            })
+#
+#    return render_template("HelpDeskFAQs_viewer.html", files=content_list)
 
 
 @app.route("/upload", methods=["POST"])
