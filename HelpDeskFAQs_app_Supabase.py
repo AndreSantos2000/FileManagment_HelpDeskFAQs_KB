@@ -123,11 +123,20 @@ def view_aplication_page():
             text = "\n".join([page.get_text() for page in doc])
             doc.close()
 
+            if file.type_desc:
+                subparts = file.type_desc.split("::")
+            else:
+                subparts = []
+
+
             content_list.append({
                 "id": file.id,
                 "filename": file.filename,
-                "text": text
+                "text": text,
+                "subparts": subparts
             })
+
+
         except Exception as e:
             content_list.append({
                 "filename": file.filename,
