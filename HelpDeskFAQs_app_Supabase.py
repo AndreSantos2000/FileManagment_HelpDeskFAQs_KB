@@ -24,7 +24,7 @@ SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET")
 #OpenAi init
 #client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
 #client = OpenAI(base_url="http://10.14.208.198:1234", api_key="lm-studio")
-client = OpenAI(base_url="https://0160-213-30-68-70.ngrok-free.app/v1", api_key="lm-studio")
+client = OpenAI(base_url="https://b1a1-213-30-68-70.ngrok-free.app/v1", api_key="lm-studio")
 
 class File(db.Model):
     __tablename__ = 'file'
