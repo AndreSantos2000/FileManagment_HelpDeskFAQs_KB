@@ -54,13 +54,13 @@
     <p>{{file.text}}-->
     <a href="/download/{{ file.id }}" class="btn btn-sm btn-success mb-3">Download</a>
     <section>
-      <!--{% for paragraph in file.text.strip().split('\n\n') %}-->
+      {% for paragraph in file.text.strip().split('\n\n') %}
         <!--{% set parts = paragraph.strip().split('.', 1) %}
         {% if parts|length > 1 %}
           {% set subparts = parts[1].split(" ", 1)[1] %}
           <p>{{ subparts.strip() }}</p>
         {% endif %}-->
-        <!--<p>{{paragraph}}</p>-->
+        <p>{{paragraph}}</p>
       {% endfor %}
     </section>
   </article>
