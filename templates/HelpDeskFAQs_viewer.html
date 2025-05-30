@@ -50,13 +50,6 @@
   {% for file in files %}
   <article>
     <h2>{{ file.filename }}</h2>
-    <p>
-      {% if file.subparts %}
-        {{ file.subparts[-1].strip() }}
-      {% else %}
-        Uncategorized
-      {% endif %}
-    </p>
     <!--<h2>{{ file.id }}</h2>
     <p>{{file.text}}-->
     <a href="/download/{{ file.id }}" class="btn btn-sm btn-success mb-3">Download</a>

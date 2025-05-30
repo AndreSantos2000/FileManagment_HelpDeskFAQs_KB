@@ -24,7 +24,7 @@ SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET")
 #OpenAi init
 #client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
 #client = OpenAI(base_url="http://10.14.208.198:1234", api_key="lm-studio")
-client = OpenAI(base_url="https://b1a1-213-30-68-70.ngrok-free.app/v1", api_key="lm-studio")
+client = OpenAI(base_url= "https://b1a1-213-30-68-70.ngrok-free.app/v1", api_key="lm-studio")
 
 class File(db.Model):
     __tablename__ = 'file'
@@ -123,20 +123,11 @@ def view_aplication_page():
             text = "\n".join([page.get_text() for page in doc])
             doc.close()
 
-            if file.type_desc:
-                subparts = file.type_desc.split("::")
-            else:
-                subparts = []
-
-
             content_list.append({
                 "id": file.id,
                 "filename": file.filename,
-                "text": text,
-                "subparts": subparts
+                "text": text
             })
-
-
         except Exception as e:
             content_list.append({
                 "filename": file.filename,
