@@ -4,18 +4,6 @@
   <meta charset="UTF-8" />
   <title>RAG Chat</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    #chat-box {
-      max-height: 70vh;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 1rem;
-      border-radius: 8px;
-      background-color: #f8f9fa;
-    }
-    .user-msg { font-weight: bold; }
-    .ai-msg { color: #2c3e50; }
-  </style>
 </head>
 <body class="p-4">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
@@ -55,40 +43,9 @@
 
   <script>
     document.getElementById("askBtn").addEventListener("click", async () => {
-    const chatForm = document.getElementById("chat-box");
-    const question = document.getElementById("question").value;
-    const responseBox = document.getElementById("responseArea");
+      const question = document.getElementById("question").value;
+      const responseBox = document.getElementById("responseArea");
 
-    chatForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const question = input.value.trim();
-      if (!question) return;
-
-      appendMessage("You", question, "user-msg");
-      input.value = "";
-
-      const res = await fetch("/chatRAG", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          question: question,
-          /*filepaths: ["path/to/local/file.pdf"]  // Replace with real file paths*/
-        })
-      });z
-
-      const data = await res.json();
-      if (data.answer) {
-        appendMessage("AI", data.answer, "ai-msg");
-      } else {
-        appendMessage("AI", "Error: " + (data.error || "No response"), "ai-msg");
-      }
-    });
-    function appendMessage(sender, text, className) {
-      const msg = document.createElement("div");
-      msg.innerHTML = `<strong>${sender}:</strong> <span class="${className}">${text}</span>`;
-      chatBox.appendChild(msg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
       const res = await fetch("/chatRAG", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
