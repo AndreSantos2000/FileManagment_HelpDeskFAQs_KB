@@ -32,8 +32,6 @@ class File(db.Model):
     filename = db.Column(db.String(255))
     type_id = db.Column(db.Integer)
     type_desc = db.Column(db.String(255))
-    master_type_id = db.Column(db.Integer)
-    master_type_desc = db.Column(db.String(255))
     mime_type = db.Column(db.String(255))
     filepath = db.Column(db.String(300))
 
