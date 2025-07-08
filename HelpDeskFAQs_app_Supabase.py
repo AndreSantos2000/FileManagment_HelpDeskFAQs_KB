@@ -88,8 +88,8 @@ def view_page():
                     "text": f"Error loading file: {str(e)}"
                 })
 
-    return render_template("HelpDeskFAQs_viewer.html", files=content_list)
-    #return render_template("HelpDeskFAQs_viewer.html", files=files)
+    #return render_template("HelpDeskFAQs_viewer.html", files=content_list)
+    return render_template("HelpDeskFAQs_viewer.html", files=files)
 
 @app.route("/managePage")
 def index():
